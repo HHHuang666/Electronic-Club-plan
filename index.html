@@ -6,15 +6,15 @@
 <meta name="theme-color" content="#2f9e6e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="备战清单">
-<title>备战总清单 · 电子社＋集创赛</title>
+<meta name="apple-mobile-web-app-title" content="二轮备战">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>二轮硬件考核 · 备战清单 v2</title>
 <style>
   :root{
     --bg:#f2f3f5; --card:#ffffff; --ink:#1a1a1a; --sub:#8a8f99;
     --acc:#2f9e6e; --line:#e6e8ec; --shadow:0 1px 3px rgba(0,0,0,.06),0 6px 16px rgba(0,0,0,.04);
-    --ddl:#a01c1c; --dig:#6a3fb5; --sim:#1c4fa0; --pcb:#1c7a4a; --weld:#a05a1c; --race:#4a5578; --dec:#8a6d1a;
+    --ddl:#a01c1c; --dig:#6a3fb5; --sim:#1c4fa0; --pcb:#1c7a4a; --weld:#a05a1c; --race:#4a5578; --dec:#8a6d1a; --mock:#0f6e6e; --mix:#3a4a8a;
     --safe-b: env(safe-area-inset-bottom, 0px);
     --safe-t: env(safe-area-inset-top, 0px);
   }
@@ -27,27 +27,17 @@
     max-width:520px; margin:0 auto;
     -webkit-font-smoothing:antialiased;
   }
-  /* ===== 顶部栏 ===== */
-  .top{
-    position:sticky; top:0; z-index:20;
-    background:rgba(255,255,255,.92); backdrop-filter:saturate(180%) blur(12px);
-    padding:calc(10px + var(--safe-t)) 16px 10px;
-    border-bottom:1px solid var(--line);
-  }
+  .top{position:sticky; top:0; z-index:20; background:rgba(255,255,255,.92); backdrop-filter:saturate(180%) blur(12px);
+    padding:calc(10px + var(--safe-t)) 16px 10px; border-bottom:1px solid var(--line);}
   .top-row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
   .top h1{font-size:16px; font-weight:700; margin:0; letter-spacing:.2px;}
-  .reset{
-    font-size:12px; color:var(--sub); background:#fff; border:1px solid var(--line);
-    border-radius:8px; padding:5px 11px; cursor:pointer; white-space:nowrap;
-  }
+  .reset{font-size:12px; color:var(--sub); background:#fff; border:1px solid var(--line); border-radius:8px; padding:5px 11px; cursor:pointer; white-space:nowrap;}
   .stat{font-size:12.5px; color:var(--sub); margin:8px 0 6px; font-variant-numeric:tabular-nums;}
   .stat b{color:var(--acc); font-weight:700;}
   .bar{height:9px; border-radius:99px; background:#e4e6ea; overflow:hidden;}
   .bar > i{display:block; height:100%; width:0%; border-radius:inherit; background:linear-gradient(90deg,#34b07b,#2f9e6e); transition:width .3s ease;}
-  /* ===== 视图 ===== */
   .view{display:none; padding:14px 14px calc(78px + var(--safe-b));}
   .view.on{display:block;}
-  /* ===== 周 / 阶段卡片 ===== */
   .week{border:1px solid var(--line); border-radius:16px; margin-bottom:12px; overflow:hidden; background:var(--card); box-shadow:var(--shadow);}
   .week > summary{list-style:none; cursor:pointer; padding:14px 14px; display:flex; align-items:center; gap:10px; user-select:none;}
   .week > summary::-webkit-details-marker{display:none;}
@@ -64,7 +54,7 @@
   .day-tag.ddl{background:var(--ddl);} .day-tag.dig{background:var(--dig);}
   .day-tag.sim{background:var(--sim);} .day-tag.pcb{background:var(--pcb);}
   .day-tag.weld{background:var(--weld);} .day-tag.race{background:var(--race);}
-  .day-tag.dec{background:var(--dec);}
+  .day-tag.dec{background:var(--dec);} .day-tag.mock{background:var(--mock);} .day-tag.mix{background:var(--mix);}
   .day-theme{font-size:12px; color:var(--sub); flex:1 1 100%;}
   .day-slot{font-size:11px; color:#c0392b; font-weight:600;}
   .today-badge{font-size:10px; background:var(--acc); color:#fff; padding:1px 7px; border-radius:99px; font-weight:600;}
@@ -72,10 +62,8 @@
   .task-row{padding:9px 2px;}
   .task-row + .task-row{border-top:1px dashed #eef0f3;}
   .task{display:flex; align-items:flex-start; gap:11px; cursor:pointer;}
-  .task input{
-    -webkit-appearance:none; appearance:none; width:24px; height:24px; margin:1px 0 0; flex:none;
-    border:2px solid #cfd3da; border-radius:7px; background:#fff; position:relative; cursor:pointer; transition:.15s;
-  }
+  .task input{-webkit-appearance:none; appearance:none; width:24px; height:24px; margin:1px 0 0; flex:none;
+    border:2px solid #cfd3da; border-radius:7px; background:#fff; position:relative; cursor:pointer; transition:.15s;}
   .task input:checked{background:var(--acc); border-color:var(--acc);}
   .task input:checked::after{content:""; position:absolute; left:7px; top:3px; width:6px; height:11px; border:solid #fff; border-width:0 2.5px 2.5px 0; transform:rotate(45deg);}
   .task span{font-size:14.5px; line-height:22px;}
@@ -84,7 +72,8 @@
   .tk-links{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0 35px;}
   .tk-links a{font-size:11.5px; line-height:20px; padding:3px 10px; border-radius:99px; background:#eef3fd; color:#1c4fa0; text-decoration:none; font-weight:500;}
   .tk-links a::before{content:"↗ "; font-size:10px;}
-  /* ===== 资源地图 ===== */
+  .tk-note{margin:6px 0 0 35px; padding:7px 10px; background:#f6f7f9; border-left:3px solid var(--acc); border-radius:0 8px 8px 0; font-size:12px; color:#66707c; line-height:1.75;}
+  .tk-note:empty{display:none;}
   .res-group{border:1px solid var(--line); border-radius:16px; margin-bottom:12px; overflow:hidden; background:var(--card); box-shadow:var(--shadow);}
   .res-head{padding:13px 14px; font-size:14.5px; font-weight:700; border-bottom:1px solid var(--line); background:#fafbfc;}
   .res-head small{display:block; font-size:11.5px; color:var(--sub); font-weight:400; margin-top:2px;}
@@ -92,26 +81,18 @@
   .res-item + .res-item{border-top:1px dashed #eef0f3;}
   .res-k{font-size:11px; font-weight:700; color:var(--acc); margin-bottom:3px;}
   .res-t{font-size:13.5px; line-height:21px; color:#333;}
-  /* ===== 规则 ===== */
   .tips{font-size:13.5px; color:#444; line-height:23px; padding:16px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow);}
   .tips b{color:var(--ink); font-weight:700;}
   .tips .hl{background:#fff4d6; padding:0 3px; border-radius:4px;}
   .tips p{margin:0 0 12px;} .tips p:last-child{margin:0;}
-  /* ===== 底部标签栏 ===== */
-  .tabbar{
-    position:fixed; left:50%; transform:translateX(-50%); bottom:0; z-index:30;
-    width:100%; max-width:520px;
+  .tabbar{position:fixed; left:50%; transform:translateX(-50%); bottom:0; z-index:30; width:100%; max-width:520px;
     display:flex; background:rgba(255,255,255,.96); backdrop-filter:saturate(180%) blur(12px);
-    border-top:1px solid var(--line); padding-bottom:var(--safe-b);
-  }
+    border-top:1px solid var(--line); padding-bottom:var(--safe-b);}
   .tab{flex:1; border:0; background:none; padding:9px 0 8px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--sub); font-size:11px;}
-  .tab .ic{font-size:19px; line-height:1;}
+  .tab .ic{font-size:18px; line-height:1;}
   .tab.on{color:var(--acc); font-weight:700;}
-  .empty{text-align:center; color:var(--sub); font-size:13px; padding:40px 0;}
-  /* ===== 今日卡片 ===== */
   .today-card{background:linear-gradient(135deg,#2f9e6e,#34b07b); color:#fff; border-radius:16px; padding:14px 16px; margin-bottom:14px; box-shadow:var(--shadow);}
   .today-card .tc-top{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
-  /* 安装引导条 */
   .pwa-tip{max-width:520px; margin:10px auto 0; padding:0 14px;}
   .pwa-tip .pt-row{display:flex; align-items:flex-start; gap:9px; background:#eaf6f0; border:1px solid #cdeadd; border-radius:12px; padding:10px 12px;}
   .pwa-tip .pt-ic{font-size:18px; line-height:1.4;}
@@ -131,7 +112,6 @@
   .tc-countdown{font-size:12px; opacity:.92; margin-top:10px;}
   .day.flash{animation:flash 1.2s ease;}
   @keyframes flash{0%,100%{box-shadow:0 0 0 2px rgba(47,158,110,.15);}30%{box-shadow:0 0 0 4px rgba(47,158,110,.55);}}
-  /* ===== 图例（和原版一一对应）===== */
   .legend-row{display:flex; gap:6px; overflow-x:auto; padding:2px 0 12px; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
   .legend-row::-webkit-scrollbar{display:none;}
   .legend-row .chip{flex:none; font-size:11px; padding:3px 10px; border-radius:99px; border:1px solid transparent; font-weight:600; white-space:nowrap;}
@@ -142,19 +122,42 @@
   .chip.weld{background:#fdeee3; color:#a05a1c;}
   .chip.race{background:#e9ecf5; color:#4a5578;}
   .chip.dec{background:#fdf3d7; color:#8a6d1a;}
+  .chip.mock{background:#dcf1f1; color:#0f6e6e;}
+  .chip.mix{background:#e6e9f7; color:#3a4a8a;}
+  /* ===== v2 新增：手册 / 模拟卷 / 总览 ===== */
+  .sec-title{font-size:14px; font-weight:700; margin:4px 0 10px; padding-left:9px; border-left:4px solid var(--acc); line-height:1.3;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); padding:14px; margin-bottom:12px;}
+  .card > h3{font-size:14px; margin:0 0 6px; line-height:1.4;}
+  .card .meta{font-size:11.5px; color:var(--sub); margin-bottom:10px;}
+  .card ol,.card ul{margin:0; padding-left:20px;}
+  .card li{font-size:13.5px; line-height:1.85; margin-bottom:2px;}
+  .card p{font-size:13.5px; line-height:1.85; margin:0 0 9px;}
+  .card p:last-child{margin-bottom:0;}
+  .kv{font-size:13px; line-height:1.9;}
+  .kv b{color:#1c4fa0;}
+  .formula{background:#fbf7ea; border:1px dashed #e3d6a8; border-radius:10px; padding:9px 12px; font-size:12.5px; line-height:2; color:#6b5406; margin:8px 0;}
+  .formula code{font-family:ui-monospace,Consolas,monospace; background:rgba(255,255,255,.7); padding:1px 5px; border-radius:4px;}
+  table.sc{width:100%; border-collapse:collapse; margin:8px 0 4px; font-size:12.5px;}
+  table.sc th,table.sc td{border:1px solid #e6e8ec; padding:6px 8px; text-align:left; line-height:1.6;}
+  table.sc th{background:#f7f8fa; font-weight:700;}
+  table.sc td.n{font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .pill{display:inline-block; font-size:11px; padding:2px 9px; border-radius:99px; background:#eef3fd; color:#1c4fa0; font-weight:600; margin:0 5px 5px 0;}
+  .warn{background:#fdeeea; border-left:3px solid #c0392b; border-radius:0 8px 8px 0; padding:9px 11px; font-size:12.5px; line-height:1.8; color:#8c2b1c; margin:9px 0 0;}
+  .ok{background:#eaf6f0; border-left:3px solid #2f9e6e; border-radius:0 8px 8px 0; padding:9px 11px; font-size:12.5px; line-height:1.8; color:#1c6046; margin:9px 0 0;}
+  .jump{display:block; text-align:center; font-size:12.5px; color:#1c4fa0; background:#eef3fd; border-radius:10px; padding:9px; margin-bottom:12px; text-decoration:none; font-weight:600;}
+  .empty{text-align:center; color:var(--sub); font-size:13px; padding:40px 0;}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="top-row">
-    <h1>备战总清单</h1>
+    <h1>二轮硬件考核 · 备战 v2</h1>
     <button class="reset" id="resetBtn" type="button">清空勾选</button>
   </div>
-  <div class="stat" id="stat">已勾 <b>0</b> / 0 项 · 10.20 – 11.17</div>
+  <div class="stat" id="stat">已勾 <b>0</b> / 0 项 · 10.20 – 11.7</div>
   <div class="bar"><i id="barFill"></i></div>
 </header>
 
-<!-- 首次打开的安装引导（点 × 后永久消失，存在 localStorage） -->
 <div class="pwa-tip" id="pwaTip" style="display:none;">
   <div class="pt-row">
     <span class="pt-ic">📲</span>
@@ -165,182 +168,325 @@
 
 <main>
   <section class="view on" id="viewPlan"></section>
+  <section class="view" id="viewMock"></section>
+  <section class="view" id="viewMan"></section>
   <section class="view" id="viewRes"></section>
   <section class="view" id="viewRules">
     <div class="tips">
-      <p><b>铁律（优先级从高到低）：</b>① 电子社质量一定不丢——当天电子社任务没做完，灰色集创赛任务直接砍、不补、不愧疚；② 两个死线：作业二 <span class="hl">10.22</span>、作业三设计＋下单 <span class="hl">10.25</span>；③ 上电前万用表查短路和电解电容极性，只用 5V/可调电源，绝不接市电；④ 卡超 1 小时拍照问学长或 Kimi。</p>
-      <p><b>时间配额：</b>阶段一（10.20–11.6）电子社主线 周一~周四 3h／周五~周日 8h，集创赛插缝 周中≤1.5h／周末≤1h（全部耳机视频＋纸笔，不占电脑）；阶段二（11.8 起）全部额度切给集创赛。11.4（周三）起学校开《电路分析原理》，当天社/赛任务都让路给上课，晚间任务照常。</p>
-      <p><b>怎么学：</b>每条任务下面带 ↗ 的小蓝胶囊就是<b>可直接点开的学习链接</b>（原理→软件操作→实操指导书三段式配好了）。「资源」页按 学A1 编号汇总全部链接。</p>
-      <p><b>日期说明：</b>11.7 电子社考核日为预估（周六）。若通知不同：整体平移；平移超过 2 天则压缩 11.8–11.14 试错密度（每天砍到一个模块）。11.17 集创赛选方向死线不动。集创赛只需 11.17 前定方向，真正备赛在寒假–2 月底，另行安排。</p>
+      <p><b>这次改造的依据：</b>现有一轮例题主要考按图搭建、基础元件识别和按公式改参数；纳新题进一步要求从文字需求列状态/真值表、选器件、画实验图并解释方案。二轮明确涉及焊接、PCB、仿真，故按同一梯度练习：<b>先复现培训作业，再做小幅变式、限时完成、说明验证与排错。</b>题型预测用于练习，不代表已知考纲。</p>
+      <p><b>五条执行原则：</b>①工作日约 3h、周末约 8h，超时先删拓展题，不挤占复盘和休息；②先完成培训作业的核心流程，再做拔高，不以陌生复杂电路代替基本功；③上电前用万用表查短路、极性和连锡，仅使用低压直流电源，绝不接市电；④卡住 20 分钟先记录现象与排查步骤，再向学长请教；⑤11.8 起集创赛段保留，考核日期若变动则平移最后一周冲刺安排。</p>
+      <p><b>时间配额：</b>工作日 3h = 20min 日课 ＋ 140min 主线 ＋ 20min 复盘；周末 8h = 两套限时卷 ＋ 一条串联链。<span class="hl">每天收工前必须写一句"今天卡在哪、怎么破的"</span>，这是考前最值钱的东西。</p>
+      <p><b>拔高验收：</b>①能独立复现培训作业；②能依据需求列指标/真值表并选合适方案；③仿真或实测结果能与手算对照；④在合理时限内完成核心步骤；⑤能解释接法、验证方法和常见故障。练习时限用于熟练度训练，不等于实际考核时限。</p>
+      <p><b>日期说明：</b>二轮考核日目前<b>只知道在 11 月上中旬</b>（计划里 11.7 是占位）。所以结构做成"<span class="hl">W0 补地基（10.20–10.25）→ W1 变式与串联（10.26–11.1）→ W2 六卷冲刺（11.2–11.7）</span>"：日期一变，整块平移；<b>唯一不能动的是最后 6 天的六套模拟卷</b>，它必须紧贴考核日。若考核突然提前到 11.3 前后，直接跳到 W2 的六卷，W1 只做 10.26–10.28 三天。</p>
     </div>
   </section>
 </main>
 
 <nav class="tabbar">
   <button class="tab on" data-tab="plan"><span class="ic">📅</span>计划</button>
+  <button class="tab" data-tab="mock"><span class="ic">🎯</span>模拟卷</button>
+  <button class="tab" data-tab="man"><span class="ic">📖</span>手册</button>
   <button class="tab" data-tab="res"><span class="ic">🗺️</span>资源</button>
   <button class="tab" data-tab="rules"><span class="ic">📌</span>规则</button>
 </nav>
 
 <script>
 (function(){
-  var LS_KEY = "merged-eclub-icplan-mobile-v1";
+  var LS_KEY = "eclub-round2-plan-v2";
 
-  // ===== 学习链接库（均已核实可打开）=====
+  // ===== 学习链接库（培训 PPT 里的四个官方站 + TI 手册 + 可替代源）=====
   var L = {
-    msYiqi:  ["Multisim函数发生器＋示波器用法", "https://blog.csdn.net/weixin_63135906/article/details/128435386"],
-    msBikeng:["函数发生器避坑：振幅2.5V＋偏移2.5V才有0~5V", "https://blog.csdn.net/Cixil/article/details/104730263"],
-    rcYuanli:["RC充放电原理：τ=RC、63%/37%", "https://mcu.eetrend.com/content/100012062.html"],
-    rcLab:   ["RC仿真实验指导书（照做即可）", "https://m.chinaaet.com/article/130387"],
-    lm324:   ["LM324方波→三角波→正弦波(Multisim全流程)", "https://blog.csdn.net/qq_48771816/article/details/131352942"],
-    lm324v:  ["B站视频：三角波变正弦波电路", "https://www.bilibili.com/video/BV1fg4y1G7LL/"],
-    kkcl:    ["RC电路里的KVL/分压/时间常数", "https://mcu.eetrend.com/content/100012062.html"],
-    lcedaDoc:["立创EDA官方视频教程(原理图01-03/PCB01-04)", "https://prodocs.lceda.cn/cn/faq/video-tutorial/index.html"],
-    sgg:     ["尚硅谷嘉立创EDA全套教程(快速入门019=白嫖打样)", "https://www.bilibili.com/video/BV1AT421Y7DS/"],
-    wang:    ["王文俊《数字电子技术基础》97集合集", "https://space.bilibili.com/456163933/channel/collectiondetail?sid=873298"],
-    qhPdf:   ["组合逻辑设计：真值表→卡诺图→门实现(含比较器例题)", "https://www.tup.tsinghua.edu.cn/upload/books/yz/098270-01.pdf"],
-    bjq:     ["三人表决器：真值表→卡诺图→与非门实现", "https://www.guyuehome.com/44918"],
-    logisim: ["Logisim上手教程(中科大虚拟实验中心)", "https://vlab.ustc.edu.cn/guide/doc_logisim.html"],
-    logisim2:["Logisim图文入门(放门/开关/LED/仿真)", "https://blog.csdn.net/weixin_35920379/article/details/156175531"],
-    cd4511:  ["CD4511驱动共阴数码管手把手教程", "https://blog.csdn.net/weixin_35639680/article/details/156494379"],
-    cd4511t: ["CD4511官方数据手册(引脚功能与真值表 LT/LE/BI)", "https://www.ti.com/lit/ds/symlink/cd4511b.pdf"],
-    ne555:   ["NE555LED追逐灯：原理+面包板搭建+公式推导", "https://blog.csdn.net/qq_41581588/article/details/163854512"],
-    c555:    ["555频率/占空比在线计算器", "https://www.daycounter.com/Calculators/NE555-Calculator.phtml"],
-    seq555:  ["NE555+CD4017+CD4511序列显示设计参考", "https://wenku.csdn.net/answer/28joj5mk4y"],
-    duoxie:  ["多谐振荡器工作原理(9013双闪灯)", "https://blog.csdn.net/qq_36412526/article/details/131021321"],
-    shuangshan:["多谐振荡器双闪灯：制作+焊接专用原理图+元件清单", "https://kknews.cc/zh-cn/news/52okn5l.html"],
-    tang:    ["B站：唐老师讲运算放大器", "https://www.bilibili.com/video/BV16R4y1K7hS/"],
-    tangBi:  ["唐老师运放笔记：虚短虚断+反相/同相放大推导", "https://blog.csdn.net/qq_36823004/article/details/124542999"],
-    compV:   ["B站：唐老师讲电压比较器(过零/滞回)", "https://www.bilibili.com/video/BV1pJ411c7Eq/"],
-    lm317:   ["LM317/LM337分压电阻选型全指南(Vout=1.25(1+R2/R1))", "https://m.elecfans.com/article/8399738.html"],
-    lm317c:  ["LM317在线计算器(给目标电压算电阻)", "https://www.tskau.com/circuit/lm317"],
-    diodeV:  ["爱上半导体：二极管工作原理(动画)", "https://www.bilibili.com/video/BV1Qr4y1H7i8/"],
-    triode:  ["三极管工作原理(图文+动画视频)", "https://blog.csdn.net/qq_37083038/article/details/128426316"],
-    ltspice: ["LTspice入门教程①：分压电路瞬态仿真(知乎)", "https://zhuanlan.zhihu.com/p/408309960"],
-    ltspiceV:["B站：LTspice电路仿真中文教程合集", "https://www.bilibili.com/video/BV1Sy4y1m73e/"],
-    tiepian: ["贴片焊接：单脚固定法/拖焊法", "https://www.elecfans.com/zt/2567/"],
-    tiepian2:["手工焊接贴片元件图文教程", "https://blog.csdn.net/qq_38351824/article/details/88653969"],
-    xhan:    ["拆焊视频：吸锡器用法", "https://www.bilibili.com/video/BV1df4y137fr/"],
-    xidai:   ["拆焊视频：吸锡带用法", "https://www.bilibili.com/video/BV1JE421376r/"],
-    xiaomei: ["小梅哥《零基础轻松学习FPGA》(169集)", "https://www.bilibili.com/video/BV1va411c7Dz/"],
-    xiaomei2:["小梅哥FPGA设计思想与验证(30集:含计数器/状态机)", "https://www.bilibili.com/video/BV1KE411h7AZ/"],
-    edap:    ["EDA Playground使用笔记(注册/跑例/看波形)", "https://blog.csdn.net/ResumeProject/article/details/139300170"],
-    edap2:   ["EDA Playground官网(浏览器直接写Verilog)", "https://www.edaplayground.com/"]
+    msYiqi:   ["Multisim 函数发生器+示波器用法(CSDN)", "https://blog.csdn.net/weixin_63135906/article/details/128435386"],
+    msYiqiF:  ["免费版：阿里云 Multisim 信号发生器+示波器图文", "https://developer.aliyun.com/article/1204936"],
+    msBikeng: ["函数发生器避坑：振幅2.5V+偏置2.5V才有0~5V(CSDN)", "https://blog.csdn.net/Cixil/article/details/104730263"],
+    msBikengF:["免费版：B站 Multisim 函数发生器使用", "https://www.bilibili.com/video/BV1wK4y1M7r3/"],
+    rcYuanli: ["RC充放电原理：τ=RC、63%/37%（B站图文）", "https://www.bilibili.com/read/cv15861105/"],
+    rcLab:    ["RC仿真实验指导书：时域波形+τ=RC（B站图文）", "https://www.bilibili.com/read/cv22697661/"],
+    lm324:    ["LM324方波→三角波→正弦波(Multisim全流程)", "https://blog.csdn.net/qq_48771816/article/details/131352942"],
+    lm324v:   ["B站视频：三角波变正弦波电路", "https://www.bilibili.com/video/BV1fg4y1G7LL/"],
+    tangBi:   ["唐老师笔记：虚短虚断+反相/同相放大推导(CSDN)", "https://blog.csdn.net/qq_36823004/article/details/124542999"],
+    tangBiF:  ["免费版：电子发烧友 虚短虚断图文", "https://www.elecfans.com/analog/202302222015582.html"],
+    tangS:    ["唐老师运放 合集搜索页", "https://search.bilibili.com/all?keyword=%E5%94%90%E8%80%81%E5%B8%88%E8%AE%B2%E8%BF%90%E7%AE%97%E6%94%BE%E5%A4%A7%E5%99%A8"],
+    compV:    ["B站：唐老师讲电压比较器(过零/滞回)", "https://www.bilibili.com/video/BV1pJ411c7Eq/"],
+    ne555:    ["NE555无稳态：原理+面包板+公式推导(CSDN)", "https://blog.csdn.net/qq_41581588/article/details/163854512"],
+    ne555V:   ["免费版：王文俊 7.12 555定时器（第81集）", "https://www.bilibili.com/video/BV1w3411x7Hj/"],
+    c555:     ["555频率/占空比中文计算器(免登录)", "https://toolbaba.cn/t/ne555-calc/"],
+    duoxie:   ["多谐振荡器工作原理(9013双闪灯)", "https://blog.csdn.net/qq_36412526/article/details/131021321"],
+    shuangshan:["双闪灯：制作+焊接专用原理图+元件清单", "https://kknews.cc/zh-cn/news/52okn5l.html"],
+    ltspice:  ["LTspice入门教程①：分压电路瞬态仿真(知乎，或403)", "https://zhuanlan.zhihu.com/p/408309960"],
+    ltspiceV: ["B站：LTspice电路仿真中文教程合集(31集)", "https://www.bilibili.com/video/BV1Sy4y1m73e/"],
+    kclvl:    ["清华《电工基础》样章：§1-4 KCL/KVL 详解", "https://www.tup.tsinghua.edu.cn/upload/books/yz/088653-01.pdf"],
+    lm317:    ["LM317/LM337分压电阻选型(Vout=1.25(1+R2/R1))", "https://m.elecfans.com/article/8399738.html"],
+    lm317c:   ["LM317在线计算器(给目标电压算电阻)", "https://www.tskau.com/circuit/lm317"],
+    diodeV:   ["爱上半导体：二极管工作原理(动画)", "https://www.bilibili.com/video/BV1Qr4y1H7i8/"],
+    triode:   ["三极管工作原理(图文+动画)", "https://blog.csdn.net/qq_37083038/article/details/128426316"],
+    triodeV:  ["免费版：王文俊 3.12 三极管（第24集）", "https://www.bilibili.com/video/BV1qr4y1D7Qe/"],
+    lcedaDoc: ["立创EDA官方视频教程(原理图01-03/PCB01-04)", "https://prodocs.lceda.cn/cn/faq/video-tutorial/index.html"],
+    sgg:      ["尚硅谷嘉立创EDA全套教程(131集，019=白嫖打样)", "https://www.bilibili.com/video/BV1AT421Y7DS/"],
+    tiepian:  ["贴片焊接：单脚固定法/拖焊法", "https://www.elecfans.com/zt/2567/"],
+    tiepian2: ["手工焊接贴片元件图文教程", "https://blog.csdn.net/qq_38351824/article/details/88653969"],
+    xhan:     ["拆焊视频：吸锡器用法", "https://www.bilibili.com/video/BV1df4y137fr/"],
+    xidai:    ["拆焊视频：吸锡带用法", "https://www.bilibili.com/video/BV1JE421376r/"],
+    // —— v2 新增：培训 PPT 里给的四个官方站（复刻它们的用法，就是考核的"给资料"题）——
+    oshwhub:  ["立创开源硬件平台(抄板/看别人怎么布局)", "https://oshwhub.com/"],
+    semiee:   ["半导小芯(搜任意型号的手册，打不开别的站就用它)", "https://www.semiee.com/"],
+    jlc:      ["嘉立创(下单打板：10×10 免费OSP，20元选有铅喷锡)", "https://www.jlc.com/"],
+    lcsc:     ["立创商城(查封装尺寸/看规格书)", "https://www.szlcsc.com/"],
+    tiHome:   ["TI 官网产品目录(手册最全，考核给资料题就靠这个)", "https://www.ti.com.cn/zh-cn/product-category/overview.html"],
+    dsLM324:  ["TI 手册：LM324 四运放(引脚/摆幅/单双电源)", "https://www.ti.com/lit/ds/symlink/lm324.pdf"],
+    dsLM317:  ["TI 手册：LM317 可调稳压(压差/热阻/典型电路)", "https://www.ti.com/lit/ds/symlink/lm317.pdf"],
+    dsNE555:  ["TI 手册：NE555 定时器(引脚/功能表/三态)", "https://www.ti.com/lit/ds/symlink/ne555.pdf"],
+    ds4017:   ["TI 手册：CD4017 十进制计数器(Q0–Q9时序)", "https://www.ti.com/lit/ds/symlink/cd4017b.pdf"],
+    cd4511t:  ["TI 手册：CD4511 七段译码(LT/LE/BI 真值表)", "https://www.ti.com/lit/ds/symlink/cd4511b.pdf"],
+    // —— 万一考面包板/数字，留一手 ——
+    logisim:  ["Logisim上手教程(中科大虚拟实验中心)", "https://vlab.ustc.edu.cn/guide/doc_logisim.html"],
+    qhPdf:    ["组合逻辑设计：真值表→卡诺图→门实现(清华第3章)", "https://www.tup.tsinghua.edu.cn/upload/books/yz/098270-01.pdf"],
+    wang:     ["王文俊《数字电子技术基础》107集合集", "https://space.bilibili.com/456163933/channel/collectiondetail?sid=63986"],
+    xiaomei:  ["小梅哥《零基础轻松学习FPGA》(169集)", "https://www.bilibili.com/video/BV1va411c7Dz/"],
+    xiaomei2: ["小梅哥FPGA设计思想与验证(30集)", "https://www.bilibili.com/video/BV1KE411h7AZ/"],
+    edap:     ["EDA Playground使用笔记(注册/跑例/看波形)", "https://blog.csdn.net/ResumeProject/article/details/139300170"],
+    edap2:    ["EDA Playground官网(浏览器直接写Verilog)", "https://www.edaplayground.com/"]
   };
 
   var PLAN = [
-    { name: "阶段一① · 作业保命（死线优先）", range: "10.20 – 10.25", open: true, days: [
-      { date: "10.20 周二", tag: "sim", theme: "Multisim 练手＋作业二图一", tasks: [
-        ["做", "下午＋21:15后（社3h）", "RC 充电练手（函数发生器＋示波器看充放电）→ 画作业二图一（LM324 三角波→正弦波），仿真验证 A 三角波 B 正弦波",
-          [L.rcYuanli, L.msYiqi, L.msBikeng, L.rcLab, L.lm324, L.lm324v]],
-        ["检", "睡前（社）", "能说出限幅和二阶低通各自的作用"],
-        ["看", "睡前 40min（赛·可牺牲）", "集创赛数电①：王文俊数电第 1 章 数制与码制（耳机）", [L.wang]] ] },
-      { date: "10.21 周三", tag: "sim", theme: "作业二图二＋面包板预搭", tasks: [
-        ["做", "21:15 后（社3h）", "画作业二图二（9013 交替闪烁）仿真 → 面包板真器件搭一遍验证能闪（零成本排雷）", [L.duoxie, L.shuangshan]],
-        ["看", "晚自习（社）", "B 站“无稳态多谐振荡器 原理”", [L.duoxie]],
-        ["看", "睡前 40min（赛·可牺牲）", "集创赛数电②：王文俊第 2 章 逻辑代数（耳机，和数字专项同源，赚了）", [L.wang]] ] },
-      { date: "10.22 周四", tag: "ddl", theme: "★作业二死线★焊洞洞板", slot: "只有 3h，动作要快", tasks: [
-        ["做", "全天（社3h）", "按面包板验证过的布局焊洞洞板 → 万用表查 VCC-GND 短接＋电容极性 → 可调电源 5V 上电 → 拍照录视频按命名规则提交", [L.shuangshan]],
-        ["做", "睡前 30min（赛·可牺牲）", "纸笔：二进制/十六进制互转 10 题＋逻辑式化简 2 题（手熟即可）", [L.wang]] ] },
-      { date: "10.23 周五", tag: "pcb", theme: "第三次培训＋作业三原理图（上）", slot: "社8h", tasks: [
-        ["看", "1h（社）", "第三次培训视频：PCB 层/封装/过孔/快捷键/布局规则/走线宽度表"],
-        ["做", "6.5h（社）", "立创EDA（已装好）：新建工程 → 画作业三原理图：DC005→开关→输入电容→LM317 支路→7805 支路（全直插封装）", [L.lcedaDoc, L.sgg]],
-        ["看", "睡前 1h（赛·可牺牲）", "集创赛数电③：小梅哥 Verilog 语法（只看不动手，耳机）", [L.xiaomei]] ] },
-      { date: "10.24 周六", tag: "pcb", theme: "作业三原理图（下）＋布局", slot: "社8h", tasks: [
-        ["做", "2h（社）", "原理图收尾：AMS1117-3.3 支路＋三路 LED＋散热片＋排针；DRC 通过；逐一核对封装（电解极性、TO-220 脚序）", [L.lcedaDoc]],
-        ["做", "6h（社）", "转 PCB：板框 ≤10×10cm，按输入/开关→LM317→7805→1117 分模块布局；开始布线（电源线 ≥1mm）", [L.sgg]],
-        ["看", "睡前 1h（赛·可牺牲）", "集创赛数电④：小梅哥 always/阻塞非阻塞（耳机）", [L.xiaomei]] ] },
-      { date: "10.25 周日", tag: "ddl", theme: "★作业三死线★下单＋数字课启动", slot: "社8h，集创赛今天让路", tasks: [
-        ["做", "3h（社）", "布完线→铺 GND 铜→DRC 零错误→导出 Gerber", [L.lcedaDoc]],
-        ["买", "中午前（社）", "★嘉立创下单打板（10×10cm 免费 OSP；约 20 元选有铅喷锡更好焊），BOM 随单寄宿舍★"],
-        ["做", "3h（社）", "焊练习套件：多谐振荡器（＝作业二同原理）＋串联式稳压电路（预习作业三）；325°C、2–3 秒一点", [L.shuangshan, L.lm317]],
-        ["看", "2h（社）", "数字课①：王文俊第 2 章逻辑代数精读（公式化简＋卡诺图）——社赛两用", [L.wang, L.bjq]] ] }
+    { name: "W0 · 补地基：把作业做成第一次限时训练（10.20–10.25）", range: "10.20 – 10.25", open: true, days: [
+      { date: "10.20 周二", tag: "sim", theme: "仿真从零起：仪器先过关（作业二图一的底座）", slot: "3h", tasks: [
+        ["做", "80min·仿真", "Multisim 冷启动四件事：放元件→放电源和地→连线→挂仪器。函数发生器设方波 1kHz、振幅 2.5V＋偏置 2.5V（这样才是 0~5V）；示波器 A 通道测输入、B 通道测输出，时基先 1ms/格",
+          [L.msYiqi, L.msYiqiF, L.msBikeng, L.msBikengF],
+          ["验收：双通道波形对齐、0~5V 摆幅正确、截图存档",
+           "仪器设错，后面所有仿真都是假的——这一条必须先过"]],
+        ["算", "60min·手算+仿真", "RC 充放电：R=10k、C=10µF → 先手算 τ=0.1s、0.63×5V=3.15V → 仿真用光标测 3.15V 出现时刻 → 换 C=22µF 重测一次",
+          [L.rcYuanli, L.rcLab],
+          ["验收：实测 τ 与手算误差 <15%，能解释「为什么 5τ 之后基本不再变」"]],
+        ["算", "20min·日课", "三道 RC 小题：①给 R、C 求 τ ②给 τ、R 求 C ③给 t/τ 求充到百分之几（手算，不许查答案）"],
+        ["记", "10min·睡前", "口述三句话：函数发生器三个参数、示波器三个旋钮、为什么示波器地线要和电路共地"] ] },
+
+      { date: "10.21 周三", tag: "sim", theme: "波形链：方波→三角波→正弦（作业二图一）", tasks: [
+        ["做", "90min·仿真", "照图搭 LM324 两级：第一级积分器出三角波、第二级低通滤成正弦。A 通道看三角波、B 通道看正弦",
+          [L.lm324, L.lm324v, L.tangBi, L.tangBiF],
+          ["验收：两路同频；改积分器 R 后三角波幅度变化，能说清「幅度与频率成反比」"]],
+        ["做", "50min·拔高变式", "把刚才的图全删，只留一句需求「输出 1kHz 三角波＋正弦波」，第二次不许看教程重搭一遍——这是二轮第一个真考题型",
+          null,
+          ["卡住可以回看，但别再照着摆元件：目标是把「记忆」换成「方法」"]],
+        ["读", "20min·日课", "读 LM324 手册：引脚图、单双电源、输出摆幅到不到轨（这解释了波形顶端为什么被削平）",
+          [L.dsLM324, L.semiee],
+          ["考核「给资料」题就考这个：30 秒内找到引脚号和供电范围"]],
+        ["检", "10min·睡前", "能说出限幅和低通各在波形上留下什么痕迹（削顶 / 变圆滑）"] ] },
+
+      { date: "10.22 周四", tag: "weld", theme: "双闪灯：先仿真，再上洞洞板（作业二图二）", tasks: [
+        ["做", "60min·仿真", "Multisim 画 9013 多谐振荡器双闪：先看两管交替导通，再改 R/C 看频率变快变慢",
+          [L.duoxie, L.shuangshan],
+          ["频率只要和 f≈1/(RC) 同量级即可，别死抠精确值"]],
+        ["焊", "90min·焊接入门练习", "先读《焊接入门知识》并练习烙铁控温、上锡、直插元件焊点和拆焊；熟悉万用表通断档后，再按作业电路画洞洞板布局草图，不要求当天直接完成复杂双闪板",
+          null,
+        ["验收：焊点润湿均匀、无连锡；先在无源练习板自检，通电只用低压直流并限流"]],
+        ["记", "20min·日课", "背焊接三查：电解极性 / 连锡 / 电源对地短路。上电前必须走一遍"],
+        ["检", "10min", "万用表蜂鸣档量 VCC-GND：不响才算过"] ] },
+
+      { date: "10.23 周五", tag: "pcb", theme: "立创EDA 从零到原理图（作业三上半）", slot: "3h", tasks: [
+        ["画", "100min·EDA", "建工程→学会搜元件（DC005、LM317、7805、AMS1117、电解、电阻、LED、排针）→用网络标签代替长线→画完 DC005→开关→输入电容→LM317 支路",
+          [L.lcedaDoc, L.sgg],
+          ["每放 5 个元件保存一次", "电源用 VCC/GND 符号，不要拿导线拉过去"]],
+        ["画", "50min·EDA", "补完 7805 支路、AMS1117-3.3 支路、三路 LED 指示、输出排针",
+          null,
+          ["验收：没有悬空网络，每个网络都有名字"]],
+        ["读", "20min·日课", "读 7805 / LM317 / AMS1117 手册，写下三个数：最大输出电流、最小压差、最大功耗",
+          [L.dsLM317, L.semiee, L.tiHome],
+          ["这三个数直接决定 11.2 上电时会不会烫手"]],
+        ["记", "10min", "记 5 个 EDA 快捷键：放置导线 / 放置元件 / 旋转 / 切换层 / 查找"] ] },
+
+      { date: "10.24 周六", tag: "pcb", theme: "作业三全流程：封装→布局→布线→Gerber→下单", slot: "8h", tasks: [
+        ["画", "90min", "原理图收尾 ＋ ERC/DRC 清零", null, ["警告也要看，别只盯错误"]],
+        ["检", "60min·封装核对", "逐个核对：TO-220 脚序（1=ADJ、2=OUT、3=IN）、电解极性、DC005 孔径、排针 2.54、二极管方向、拨动开关脚位",
+          [L.lcsc],
+          ["埋雷最狠的一步：封装错了板子直接报废，而打板要等 3–5 天"]],
+        ["画", "60min·布局", "板框 ≤10×10cm（为了免费打板）→ 按「输入接口→保险/开关→LM317→7805→1117→输出端子」分区，接口贴板边，丝印写清 5V/GND",
+          null,
+          ["电源板布局的核心是「一条直线走下来」，别让输入和输出绕回去"]],
+        ["画", "150min·布线", "电源线 ≥1mm（1A 以上 1.5mm）、地线走粗并单点汇聚、避免 90° 锐角、过孔别压在焊盘上",
+          [L.sgg],
+          ["先布电源和地，再布信号；布不完先保证电源路径通"]],
+        ["画", "60min·收尾", "铺 GND 铜→DRC 零错误→导出 Gerber→嘉立创下单（10×10 免费 OSP；想好焊花 20 元选有铅喷锡）",
+          [L.jlc, L.oshwhub],
+          ["下单前用 Gerber 查看器过一眼：板框、丝印、焊盘数量对不对"]],
+        ["焊", "60min·备料", "把电源板要用的元件按阻值/极性分好，电阻弯脚、电解标极性",
+          null,
+          ["别等板子到了才找元件，那会浪费一整个晚上的黄金时间"]],
+        ["记", "30min·复盘", "写「我这块板最丑的三处」并给出改进方案（11.2 前不许改，留到 10.27 重排练习）"] ] },
+
+      { date: "10.25 周日", tag: "mix", theme: "第一次合练：仿真变式 ＋ 面包板 ＋ 贴片", slot: "8h", tasks: [
+        ["画", "90min·机动", "作业三还没下单→补完下单；已下单→打开 oshwhub 抄一块「多路电源模块」，列出它比你好的三处",
+          [L.oshwhub], null],
+        ["算", "120min·仿真拔高", "五个小电路各 20min：反相放大（-Rf/R1）、同相放大（1+Rf/R1）、加法器、过零比较器、滞回比较器。每个都先手算→仿真→对误差",
+          [L.tangBi, L.tangBiF, L.compV],
+          ["验收：五个电路的实测增益/阈值与手算误差 <10%，否则回查公式"]],
+        ["做", "90min·面包板", "把反相放大器和滞回比较器搬上面包板，用示波器和仿真波形对拍",
+          null,
+          ["面包板是零成本排雷场：先在面包板通，再上洞洞板"]],
+        ["焊", "60min·直插巩固", "在废板上练习焊接、拆焊和补焊；有余力再试 0805，贴片只作选做，不作为本轮核心验收",
+          [L.tiepian, L.tiepian2],
+          ["验收：20 个焊点大小一致、无立碑、无连锡"]],
+        ["记", "60min·错题本", "建三列错题本：我算错的 / 仿真与手算不符的 / 板子和焊接上的坑",
+          null,
+          ["这本子就是考前一天唯一要看的东西"] ] ] }
     ] },
-    { name: "阶段一② · 数字设计专项（主战场）", range: "10.26 – 11.1", open: false, days: [
-      { date: "10.26 周一", tag: "dig", theme: "组合逻辑方法论", tasks: [
-        ["做", "3h（社）", "方法论落地：最小项→化简→两级与非实现；纸面 3 题（多数表决器/半加器/奇偶判断）→ Logisim 秒级验证 → Multisim 用 74HC00 仿真其一", [L.qhPdf, L.bjq, L.logisim]],
-        ["看", "睡前 40min（赛·可牺牲）", "集创赛数电⑤：小梅哥 计数器章节（耳机）", [L.xiaomei2]] ] },
-      { date: "10.27 周二", tag: "dig", theme: "二轮例题①74HC02 双控开关", tasks: [
-        ["做", "3h（社）", "纸面设计（真值表→或非实现）→ Logisim 验证 → Multisim 数字仿真 → 面包板实物（模拟考核“给资料现场设计”流程）", [L.qhPdf, L.logisim]],
-        ["看", "睡前 40min（赛·可牺牲）", "集创赛数电⑥：小梅哥 状态机章节（耳机）", [L.xiaomei2]] ] },
-      { date: "10.28 周三", tag: "dig", theme: "二轮例题②4-2 编码器", tasks: [
-        ["做", "2.5h（社）", "4-2 编码器纸面设计（一轮挂掉的题型）→ Logisim → Multisim → 面包板 2 个 LED 显示编码", [L.qhPdf, L.logisim]],
-        ["顺", "0.5h（社）", "若 PCB 快递到了先签收收好，10.30 再焊"],
-        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电①：KCL/KVL/分压 视频（耳机，为仿真拔高和 11.4 电路课打底）", [L.kkcl]] ] },
-      { date: "10.29 周四", tag: "dig", theme: "一轮真题重做①比较器", tasks: [
-        ["做", "3h（社）", "重做一轮挂掉的 74HC00 一位比较器：A>B/A=B/A<B 三输出，纸面→Logisim→Multisim→面包板（库存有 SN74HC00N）", [L.qhPdf, L.logisim]],
-        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电②：RC 充放电/时间常数 视频（耳机）", [L.rcYuanli, L.rcLab]] ] },
-      { date: "10.30 周五", tag: "dig", theme: "数码管＋555＋焊电源板", slot: "社8h", tasks: [
-        ["做", "3h（社）", "CD4511＋共阴数码管点亮 0–9：读资料接 A/B/C/D＋LT/LE，开关拨 0–9（买的器件到了）", [L.cd4511, L.cd4511t]],
-        ["做", "3h（社）", "NE555 无稳态闪烁灯：换 R/C 测频率，验证 f≈1.44/((R1+2R2)C)——正是例题改参数题的公式", [L.ne555, L.c555]],
-        ["做", "2h（社）", "换脑子：焊收到的电源板（先低后高、TO-220 上散热片、电解极性；焊完万用表查）", [L.lm317]] ] },
-      { date: "10.31 周六", tag: "dig", theme: "挑战题：“520”循环播放器", slot: "社8h，集创赛今天让路", tasks: [
-        ["拆", "1h（社）", "拆三段：555 时钟→4017 计数→4511＋数码管，画框图", [L.ne555, L.seq555]],
-        ["做", "6h（社）", "分段搭再级联：555 出 ~1Hz 脉冲→4017 十输出轮流高→挑 5/2/0 接译码显示；不通就分段回查", [L.seq555, L.cd4511t]],
-        ["写", "1h（社）", "数字复盘笔记：6 个设计题的“真值表→实现”套路，写成自己的 checklist", [L.qhPdf]] ] },
-      { date: "11.1 周日", tag: "sim", theme: "仿真拔高（计时）＋PCB 提速＋贴片", slot: "社8h", tasks: [
-        ["考", "3h（社）", "仿真限时 3 题（每题计时 1h，先手算预测再验证）：反相放大器增益 / RC 低通截止频率 / LM317 输出电压", [L.tangBi, L.lm317, L.lm317c]],
-        ["做", "3h（社）", "PCB 提速：把 555 闪烁灯画成第二块小 PCB，目标 2.5h 内 原理图→PCB→DRC 通过", [L.lcedaDoc]],
-        ["做", "2h（社）", "焊接拔高：贴片镊子“一边固定法”＋吸锡带拆焊练一次", [L.tiepian, L.tiepian2, L.xidai]],
-        ["看", "睡前 1h（赛·可牺牲）", "集创赛模电③：爱上半导体 二极管（耳机）", [L.diodeV]] ] }
+
+    { name: "W1 · 变式与串联：三个模块各自拔高一层（10.26–11.1）", range: "10.26 – 11.1", open: false, days: [
+      { date: "10.26 周一", tag: "sim", theme: "电源链仿真：整流→滤波→稳压（再练一次给指标反推参数）", tasks: [
+        ["做", "90min·仿真", "变压器 9V 次级→整流桥→滤波电容→7805/LM317→负载。测纹波峰峰值、算压差、算功耗 P=(Vin-Vout)×I",
+          [L.lm317, L.rcLab],
+          ["验收：实测纹波与 Vr≈I/(2fC) 同量级，误差能解释"]],
+        ["算", "50min·拔高反推", "给指标：输出 5V/0.5A、纹波 <100mV → 自己定滤波电容和次级电压，再仿真验证",
+          null,
+          ["这是二轮最可能的考法：给指标不给图"]],
+        ["算", "20min·日课", "三道 LM317 计算：Vout=1.25(1+R2/R1)，给 R1 求 R2 / 给 Vout 求 R2 / 算功耗",
+          [L.lm317c]] ] },
+
+      { date: "10.27 周二", tag: "pcb", theme: "布局推倒重排：把规则变成手上的动作", tasks: [
+        ["画", "90min·重排", "把自己电源板布局全删，按「输入→保护→变换→输出」＋「大电容→小电容→芯片」＋「接口贴边」重排一遍，截图存证",
+          null,
+          ["同一个板子做第二遍，速度应该快一倍——这就是考核要的手速"]],
+        ["算", "50min", "列一张走线宽度表：每条网络多少电流、该走多宽（电源 1mm 起、地更宽、信号 0.3mm）",
+          [L.sgg],
+          ["把表抄进错题本，考前扫一眼"]],
+        ["读", "20min·日课", "重看第三次培训 PPT 第 8–10 页（晶振/电容就近、散热片旁不放电容、走线宽度），复述三条"] ] },
+
+      { date: "10.28 周三", tag: "weld", theme: "限时洞洞板：555 闪烁（第一次计时）", tasks: [
+        ["焊", "100min·计时", "给一张 555 无稳态原理图（不许看教程）→纸上画翻面草图→洞洞板实现→点亮。计时器开着",
+          [L.ne555, L.ne555V, L.shuangshan],
+          ["目标 100min 内亮；超时记下卡在第几步：读图 / 翻面 / 走线 / 焊接"]],
+        ["检", "40min·检测", "万用表蜂鸣档查短路→二极管档查 LED 极性→通电后测各节点电压是否符合预期",
+          null,
+          ["先查短路再上电，这是唯一不能省的 5 分钟"]],
+        ["记", "20min·日课", "写「翻面草图三要点」：地母线怎么走、跨线留在哪、元件引脚怎么当导线用"] ] },
+
+      { date: "10.29 周四", tag: "sim", theme: "故障仿真：先猜现象，再验证", tasks: [
+        ["做", "90min·仿真", "五个错误接法各 18min：①运放只接单边电源 ②电解反接 ③二极管反接 ④反馈电阻开路 ⑤滤波电容缺失。先写「我预期会怎样」→仿真→写「实际怎样、怎么查出来」",
+          null,
+          ["这条练的是二轮「给你一个坏电路，说现象/找错」的题型"]],
+        ["做", "50min·限时", "用 555 做 1kHz、占空比 50%、幅度 0–5V 方波（40min 内），先手算 R/C 再仿真验证",
+          [L.c555, L.ne555],
+          ["f=1.44/((R1+2R2)C)：先算后仿真，误差 <20% 算过"]],
+        ["记", "20min·日课", "更新错题本：今天五题里哪两个现象你猜错了"] ] },
+
+      { date: "10.30 周五", tag: "pcb", theme: "陌生小电路 60 分钟出板（提速）", tasks: [
+        ["画", "100min·计时", "用已完成的培训作业原理图重新练一次：从建工程、选封装到布局布线和 DRC；计时记录各步骤，先保证正确再逐步提速",
+          [L.lcedaDoc],
+          ["这个时长就是考核的节奏：原理图 20min、布局 15min、布线 25min"]],
+        ["检", "40min", "对照抄板：找两个「别人想到、我没想到」的细节（丝印箭头、安装孔、接口防呆）",
+          [L.oshwhub]],
+        ["记", "20min·日课", "记 5 个快捷键 ＋ 一条心得「布局先定接口，再定芯片」"] ] },
+
+      { date: "10.31 周六", tag: "mock", theme: "模拟卷一：仿真 A ＋ 焊接 A ＋ 串联链启动", slot: "8h", tasks: [
+        ["考", "90min·仿真卷A", "严格计时 90min，只给指标不给图（卷子在「模拟卷」页）",
+          null,
+          ["到点停手，做不完就写「卡在哪」，不许偷偷延长"]],
+        ["考", "90min·焊接卷A", "严格计时 90min，给原理图，洞洞板实现并点亮",
+          null,
+          ["焊完先自己查短路，再上电"]],
+        ["记", "60min·评分", "用评分表逐项打分，写三条「丢分点」",
+          null,
+          ["低于 75 分说明这块还没到考核线"]],
+        ["做", "120min·串联链①", "需求：1.25–12V 可调 ＋ 5V 固定 ＋ LED 指示 ＋ 反接保护。先画框图→手算→仿真验证（先别画板）",
+          [L.lm317, L.lm317c, L.diodeV],
+          ["这是「一条链」考法的预演：同一份需求走完仿真→PCB→焊接"]],
+        ["记", "60min·复盘", "把今天三个「卡住时刻」写清楚，明天各留 20min 专门修"] ] },
+
+      { date: "11.1 周日", tag: "mock", theme: "模拟卷二：PCB A ＋ 串联链落地", slot: "8h", tasks: [
+        ["考", "90min·PCB卷A", "严格计时 90min：给原理图 → PCB → DRC 零错误",
+          null,
+          ["板框、封装、丝印、电源线宽，四项逐个自检"]],
+        ["记", "60min·评分", "打分 ＋ 把自己板子和它的差距写成三条"],
+        ["画", "150min·串联链②", "立创EDA：原理图→PCB→铺铜→DRC→Gerber。能下单就下单（11.7 前能到就当考核彩蛋）",
+          [L.lcedaDoc, L.jlc],
+          ["不准跳步：DRC 不零就等于没做完"]],
+        ["焊", "90min·洞洞板/直插巩固", "独立完成一个培训作业中的直插电路，练布局、焊接、万用表检查和低压上电；贴片器件仅在有指导且核心任务完成后选做",
+          [L.tiepian, L.xidai]],
+        ["记", "60min·复盘", "更新错题本，并算一下本周三块各花多少小时（下周按短板重新分配）"] ] }
     ] },
-    { name: "阶段一③ · 模拟考与考前", range: "11.2 – 11.7", open: false, days: [
-      { date: "11.2 周一", tag: "weld", theme: "电源板上电测试", tasks: [
-        ["做", "2.5h（社）", "电源板焊收尾＋万用表复查→可调电源上电测三路输出（5V/可调/3.3V）＋LED 指示→拍正反面照片视频", [L.lm317, L.lm317c]],
-        ["备", "0.5h（社）", "整理三次作业全部交付物"],
-        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电④：爱上半导体 三极管（耳机）", [L.triode]] ] },
-      { date: "11.3 周二", tag: "dig", theme: "模拟考①：设计＋仿真", tasks: [
-        ["考", "1.5h（社）", "数字设计限时题：让 Kimi 出一道陌生组合逻辑题（给芯片资料），纸面设计→Logisim 验证，计时", [L.qhPdf, L.logisim]],
-        ["考", "1.5h（社）", "仿真限时题：自出“整流＋滤波＋稳压”题，画完仿真出波形，写每部分作用", [L.lm317, L.rcLab]],
-        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电⑤：唐老师讲运放 第 1 讲 虚短虚断（耳机）", [L.tang, L.tangBi]] ] },
-      { date: "11.4 周三", tag: "weld", theme: "模拟考②：面包板＋PCB", slot: "白天有电路分析首课，认真听", tasks: [
-        ["考", "1.5h（社）", "面包板限时题：搭给定电路＋改参数变速（复刻例题第一题考法），计时", [L.c555, L.shuangshan]],
-        ["考", "1.5h（社）", "PCB 限时题：陌生小电路（如比较器）原理图→DRC，2h 内", [L.lcedaDoc]],
-        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电⑥：唐老师讲运放 第 2–3 讲（耳机）", [L.tang]] ] },
-      { date: "11.5 周四", tag: "dig", theme: "补漏＋理论速览", tasks: [
-        ["做", "2h（社）", "只补模拟考暴露的最弱一项（优先序：数字设计＞PCB 速度＞仿真＞焊接）", [L.qhPdf]],
-        ["看", "1h（社）", "理论速览：三次培训 PPT＋走线宽度表＋布局规则＋焊接要点＋数字设计 checklist"],
-        ["休", "（赛）", "集创赛今日休，养精神"] ] },
-      { date: "11.6 周五", tag: "dig", theme: "考前轻复习（≤2h）", tasks: [
-        ["看", "随意", "只看数字 checklist 和理论速览笔记，不开新内容，早睡"],
-        ["检", "装备", "烙铁/万用表/镊子/斜口钳/焊锡丝装包（若考核要求自带）"] ] },
-      { date: "11.7 周六", tag: "ddl", theme: "★电子社考核日（预估）★", tasks: [
-        ["考", "现场", "节奏：先通览全部题目→先做有把握的（搭电路类）→设计题先写真值表再动手→留 15 分钟自查极性/短路"],
-        ["考", "心态", "给芯片资料先画管脚图；给公式先代数值估算；一切电路先算再搭"] ] }
+
+    { name: "W2 · 六卷冲刺：紧贴考核日的 6 天（11.2–11.7）", range: "11.2 – 11.7", open: false, days: [
+      { date: "11.2 周一", tag: "weld", theme: "电源板上电 ＋ 仿真模拟卷 B", tasks: [
+        ["做", "50min·上电", "电源板先查短路和极性 → 可调电源从 5V 起 → 测三路输出（5V / 可调 / 3.3V）→ LED 指示是否正常",
+          [L.lm317c, L.dsLM317],
+          ["上电三查：短路、极性、限流。烧了就是白焊"]],
+        ["考", "90min·仿真卷B", "限时 90min（卷子在「模拟卷」页）"],
+        ["记", "30min·评分+日课", "打分 ＋ 写一条「今天最应该提前做的动作」"],
+        ["备", "10min", "烙铁头擦干净、焊锡备足——别在考前一天才发现工具不行"] ] },
+
+      { date: "11.3 周二", tag: "mock", theme: "PCB 模拟卷 B ＋ 只补最弱一项", tasks: [
+        ["考", "90min·PCB卷B", "限时 90min：只给需求，自己画原理图再出板",
+          null,
+          ["没有标准图，能自洽（DRC 过、功能对）就算过"]],
+        ["做", "50min·补漏", "按今天暴露的最弱项只补一块（优先序：封装 > 布线 > 布局）",
+          null, ["只补一块，别贪"]],
+        ["读", "20min·日课", "把手册里「给资料 30 秒读法」过一遍：引脚→功能表→极限参数→典型电路"] ] },
+
+      { date: "11.4 周三", tag: "mock", theme: "焊接模拟卷 B（白天有电路分析首课）", slot: "白天课认真听", tasks: [
+        ["考", "90min·焊接卷B", "限时完成一个以培训直插元件为主的小电路：按图布局焊接、检查极性/连锡/短路，再低压上电并测量；贴片不设为必需项",
+          [L.lm317c]],
+        ["做", "50min", "打分 ＋ 用吸锡带把一个焊点拆掉重焊（考核可能考拆焊）",
+          [L.xidai, L.xhan]],
+        ["算", "20min·日课", "从今天电路课笔记里挑一条 KCL/KVL，用 Multisim 验一遍",
+          null, ["课堂内容和仿真手算是同一件事，别当两门课"] ] ] },
+
+      { date: "11.5 周四", tag: "mix", theme: "三卷汇总：把丢分变成防呆规则", tasks: [
+        ["记", "90min", "把六套卷的丢分点汇总：同类错误出现 ≥2 次的，写成一条「防呆规则」（例：焊前必查电解极性朝向丝印）",
+          null, ["目标：考前只带 5–8 条规则进考场"]],
+        ["做", "50min·限时", "针对最狠的那一条规则，限时做一道对应题"],
+        ["读", "20min·日课", "A4 速查卡读三遍（速查卡是单独文件，可直接打印）"] ] },
+
+      { date: "11.6 周五", tag: "mix", theme: "考前轻复习（≤3h，不开新内容）", tasks: [
+        ["读", "60min", "只看 A4 速查卡 ＋ 错题本 ＋ 防呆规则",
+          null, ["今天学新东西等于给自己加焦虑"]],
+        ["考", "40min·小模拟", "30 分钟全真小模拟：仿真 1 题 ＋ 口述焊接检查流程"],
+        ["看", "30min·数字电路补充", "根据一轮纳新题任选一道：先列输入/输出真值表或状态表，再画门电路框图并说明如何验证；若时间允许，再看 555→4017→4511 级联框图，不要求背引脚",
+          [L.qhPdf, L.ds4017, L.cd4511t, L.ne555],
+          ["已知二轮重点为焊接、PCB、仿真；这项只作一轮题型迁移练习"]],
+        ["备", "40min", "装备打包：烙铁/万用表/镊子/斜口钳/焊锡丝/吸锡带/洞洞板/元件盒/插排"],
+        ["休", "—", "早睡，明天是体力活"] ] },
+
+      { date: "11.7 周六", tag: "ddl", theme: "★考核日（占位 11.7，真实日期待通知）★", slot: "现场", tasks: [
+        ["考", "现场·节奏", "通览全部题目 → 先做有把握的（搭电路/焊接类）→ 设计题先写真值表或指标清单再动手 → 留 15min 自查极性/短路"],
+        ["考", "现场·答题卡", "按固定七段写：需求→真值表/指标→选型→引脚分配→接线图→验证方法→故障排查",
+          null, ["一轮真题要求说明分析思路并设计实验图；把推理过程写清楚是可迁移的训练目标"]],
+        ["检", "交卷前", "极性、短路、虚焊、功能是否真跑起来；能演示的一定演示给人看"] ] }
     ] },
-    { name: "阶段二 · 集创赛压缩试错（全额时间）", range: "11.8 – 11.14", open: false, days: [
+
+    { name: "集创赛段 · 原样保留（11.8–11.17，考核后才开始动）", range: "11.8 – 11.17", open: false, days: [
       { date: "11.8 周日", tag: "race", theme: "数字实操①：Verilog 环境＋流水灯", slot: "9h", tasks: [
         ["做", "上午", "EDA Playground 注册上手（不装 Vivado），敲第一个模块并编译", [L.edap, L.edap2]],
-        ["做", "下午", "小梅哥视频挑重点回顾（语法/always/计数器），写流水灯＋偶数分频器，波形验证", [L.xiaomei, L.xiaomei2]],
+        ["做", "下午", "小梅哥视频挑重点回顾（语法/always/计数器），写流水灯＋偶数分频器，波形验证", [L.xiaomei, L.xiaomei2],
+          ["回顾：169 集版旧版 03/05（语法）＋06A–D（计数器）；或 30 集版第 3–6 集"]],
         ["写", "晚上", "记录：和电子社数字专项（面包板逻辑）相比，写代码的感觉如何"] ] },
       { date: "11.9 周一", tag: "race", theme: "数字实操②：秒表主体", slot: "4.5h", tasks: [
-        ["做", "2.5h", "秒表：计数＋分频＋按键启停消抖（简化显示：两位静态数码管或 4 个 LED 二进制输出）", [L.xiaomei2]],
+        ["做", "2.5h", "秒表：计数＋分频＋按键启停消抖（简化显示：两位静态数码管或 4 个 LED 二进制输出）", [L.xiaomei2],
+          ["照抄 30 集版：第 7 集状态机＋第 8–9 集按键消抖＋第 10–12 集数码管"]],
         ["做", "1h", "状态机写法对比练习（若卡壳直接跳过，不恋战）"],
         ["写", "1h", "数字侧 200 字体验总结＋1–5 分（必须写：电子社的经历是最重要参照）"] ] },
       { date: "11.10 周二", tag: "race", theme: "模拟实操①：运放＋滤波", slot: "4.5h", tasks: [
-        ["看", "0.5h", "LTspice 教程 01–02 快速过（你已会 Multisim，只是换个壳）", [L.ltspice, L.ltspiceV]],
-        ["做", "2h", "反相放大器仿真验证手算＋RC 低通 AC 分析测截止频率", [L.tangBi]],
-        ["做", "1.5h", "三极管共射放大：看到输出比输入大；改集电极电阻对比失真", [L.triode]] ] },
+        ["看", "0.5h", "LTspice 教程 01–02 快速过（你已会 Multisim，只是换个壳）", [L.ltspice, L.ltspiceV],
+          ["知乎①②若 403：直接看 ltspiceV 第 21 集（AC 分析）＋第 22 集（瞬态）"]],
+        ["做", "2h", "反相放大器仿真验证手算＋RC 低通 AC 分析测截止频率", [L.tangBi, L.tangBiF]],
+        ["做", "1.5h", "三极管共射放大：看到输出比输入大；改集电极电阻对比失真", [L.triode, L.triodeV]] ] },
       { date: "11.11 周三", tag: "race", theme: "模拟实操②：振荡器＋稳压", slot: "4.5h", tasks: [
         ["做", "2h", "迟滞比较器＋RC 方波发生器仿真", [L.compV]],
-        ["做", "2h", "稳压专题：把电子社电源板（LM317/7805/1117）复盘成小报告——压差、功耗、散热，这正是曾益慧创 LDO 赛道的直接经验", [L.lm317]],
-        ["写", "0.5h", "一句话记录体感：模电和数电哪个让你“烦但想解决”"] ] },
+        ["做", "2h", "稳压专题：把电子社电源板（LM317/7805/1117）复盘成小报告——压差、功耗、散热，正是 LDO 赛道的直接经验", [L.lm317]],
+        ["写", "0.5h", "一句话记录体感：模电和数电哪个让你「烦但想解决」"] ] },
       { date: "11.12 周四", tag: "race", theme: "模拟实操③：收尾＋打分", slot: "4.5h", tasks: [
         ["做", "2h", "重做本周最不爽的仿真一遍，存好截图和参数"],
         ["写", "1.5h", "模拟侧 200 字体验总结＋1–5 分"],
-        ["看", "1h", "唐老师运放剩下的集数补缺（耳机）", [L.tang]] ] },
+        ["看", "1h", "唐老师运放剩下的集数补缺（耳机）", [L.tangS]] ] },
       { date: "11.13 周五", tag: "race", theme: "补漏＋两侧对比", slot: "9h", tasks: [
         ["做", "上午", "最弱一侧再来一遍（数电→秒表加功能；模电→滤波器/放大器重跑）"],
-        ["写", "下午", "两侧分数对比表：分数 / 卡住时的心情 / 哪个作品更想演示给人看（三问定方向的素材）"],
-        ["备", "晚上", "翻电子社阶段的复盘笔记：面包板数字设计 vs 模电仿真，你的体感 already 记录在案"] ] },
+        ["写", "下午", "两侧分数对比表：分数 / 卡住时的心情 / 哪个作品更想演示给人看"],
+        ["备", "晚上", "翻电子社阶段的复盘笔记：面包板数字设计 vs 模电仿真，体感已记录在案"] ] },
       { date: "11.14 周六", tag: "race", theme: "机动缓冲日", slot: "9h 内", tasks: [
         ["做", "按需", "前六天没完成的模块补完；都做完了就把秒表/滤波器作品打磨到能演示"],
-        ["休", "至少半天", "睡到自然醒，电子社考核刚结束，你辛苦了"] ] }
-    ] },
-    { name: "决策周 · 11.17 方向选择死线", range: "11.15 – 11.17", open: false, days: [
+        ["休", "至少半天", "睡到自然醒，电子社考核刚结束，你辛苦了"] ] },
       { date: "11.15 周日", tag: "dec", theme: "三问定方向", slot: "9h", tasks: [
-        ["问", "上午", "翻全部体验日志（电子社 10.26–11.7 的体感＋集创赛两周试错）：哪边分数高？哪边卡住更“烦但想解决”？哪个作品更想演示给人看？"],
-        ["查", "下午", "按选定倾向调研细分赛道：模电侧＝光电传感器模拟前端（国家集创中心）/LDO 稳压器（曾益慧创）；数电侧＝Robei 控制电路（Verilog）；确认自己组别能报哪些"],
+        ["问", "上午", "翻全部体验日志（10.20–11.7 的体感＋两周试错）：哪边分数高？哪边卡住更「烦但想解决」？哪个作品更想演示给人看？"],
+        ["查", "下午", "按倾向调研细分赛道：模电侧＝光电传感器模拟前端 / LDO 稳压器；数电侧＝Robei 控制电路（Verilog）"],
         ["备", "晚上", "列出两个候选方向的一页对比（优势/风险/备赛计划）"] ] },
       { date: "11.16 周一", tag: "dec", theme: "最终选择＋报名材料", slot: "4.5h 内", tasks: [
         ["决", "上午", "按三问打分定方向（平局→选数字/FPGA）"],
@@ -349,270 +495,577 @@
       { date: "11.17 周二", tag: "dec", theme: "★方向选择提交（死线）★", tasks: [
         ["办", "白天", "提交方向选择"],
         ["检", "晚上", "确认提交成功，截图存档"] ] }
-    ] },
-    { name: "学习资源地图（任务里的链接按编号在这里汇总）", range: "按编号查", open: false, days: [
-      { date: "A 数字设计", tag: "dig", theme: "对应 10.25–10.31 主战场", tasks: [
-        ["学A1", "逻辑代数/卡诺图", "王文俊《数字电子技术基础》第 2 章；只看化简部分", [L.wang]],
-        ["学A2", "组合逻辑设计", "核心套路：真值表→表达式→化简→门实现（清华讲义含比较器完整例题）", [L.qhPdf, L.bjq]],
-        ["学A3", "译码/数码管", "CD4511 引脚与真值表；手册：半导小芯 semiee.com 搜 CD4511", [L.cd4511t, L.cd4511]],
-        ["学A4", "触发器/计数器", "王文俊第 5、6 章选看（理解 CD4017 的 Q0–Q9 轮流输出即可）", [L.wang]],
-        ["学A5", "NE555", "记公式 f≈1.44/((R1+2R2)C)，计算器直接算", [L.ne555, L.c555]],
-        ["学A6", "Logisim", "会放门、开关、LED、跑仿真就够", [L.logisim, L.logisim2]] ] },
-      { date: "B 模电与仿真", tag: "sim", theme: "对应 10.20–10.22、11.1、阶段二", tasks: [
-        ["学B1", "KCL/KVL/分压", "配合纸笔手算；RC 文章里 KVL 的应用讲得清楚", [L.kkcl]],
-        ["学B2", "RC 充放电", "τ=RC、63%/37%、3~5τ 充满；仿真实验指导书照做", [L.rcYuanli, L.rcLab]],
-        ["学B3", "二极管/稳压管", "爱上半导体动画，20 分钟看懂单向导电", [L.diodeV]],
-        ["学B4", "三极管", "图文+动画：Ic=βIb、截止/放大/饱和三态", [L.triode]],
-        ["学B5", "运算放大器", "唐老师讲运放第 1–3 讲（虚短虚断→反相/同相→滤波）；吃力退回王文俊模电“集成运算放大器”章", [L.tang, L.tangBi]],
-        ["学B6", "Multisim 操作", "以社团第二次培训视频为主；仪器用法和避坑看这两篇", [L.msYiqi, L.msBikeng]],
-        ["学B7", "LTspice", "入门①分压瞬态→入门②RC低通AC分析；视频合集查漏补缺", [L.ltspice, L.ltspiceV]] ] },
-      { date: "C PCB", tag: "pcb", theme: "对应 10.23–10.25、10.29、11.1", tasks: [
-        ["学C1", "PCB 基础", "社团第三次培训视频（层/封装/过孔/规则/走线宽度表）"],
-        ["学C2", "立创EDA 操作", "官方教程：原理图 01–03、PCB 01–04；尚硅谷全套备用", [L.lcedaDoc, L.sgg]],
-        ["学C3", "布局布线进阶", "立创开源 oshwhub.com 搜“多路开关电源模块”抄板；对照自己板找问题", [L.sgg]],
-        ["学C4", "芯片手册/封装", "半导小芯 semiee.com、立创商城商品页 datasheet、TI 官网 ti.com.cn——考核给资料题就靠平时练这个"] ] },
-      { date: "D 焊接", tag: "weld", theme: "对应 10.22、10.25、10.30、11.1–11.2", tasks: [
-        ["学D1", "焊接基础", "社团第一次培训视频＋《焊接入门知识》PDF 复读（直插/贴片/虚焊/保养）"],
-        ["学D2", "拆焊", "培训 PDF 里附的两条 B 站视频", [L.xhan, L.xidai]],
-        ["学D3", "贴片电烙铁法", "单脚固定法＋拖焊法；用你买的 FZT651 先练 SOT-223", [L.tiepian, L.tiepian2]],
-        ["学D4", "万用表", "胜利万用表随表说明书＋B 站搜“万用表 蜂鸣档 测通断”"] ] },
-      { date: "E 集创赛", tag: "race", theme: "对应 10.20–10.27 晚＋11.8–11.14", tasks: [
-        ["学E1", "数电基础", "王文俊第 1 章（数制与码制）＋第 2 章（逻辑代数）——与学A1 是同一批视频，社赛两用", [L.wang]],
-        ["学E2", "Verilog/FPGA", "小梅哥：语法→always→计数器→状态机按集看；配合 EDA Playground 在线仿真", [L.xiaomei, L.xiaomei2, L.edap]],
-        ["学E3", "模电方向", "= 学B5 ＋ 学B7 组合使用", [L.tang, L.ltspice]] ] }
     ] }
   ];
 
-  var TAG_NAME = { ddl: "社·死线", dig: "社·数字", sim: "社·仿真", pcb: "社·PCB", weld: "社·焊接", race: "赛", dec: "赛·决策" };
+  var MANUAL = [
+    { title: "一 · 先看跨度：一轮例题 vs 一轮真题", intro: "这一组是整份计划的依据。你的原计划是按「培训讲了什么」排的；二轮真正要对付的是「例题到考题那一步跳得多远」。把这一步量出来，才知道该往哪儿加难度。", cards: [
+      { name: "1. 一轮的例题（9/19）vs 一轮的真题（9/26）", meta: "例题＝面包板，真题＝纳新题，两份你文件夹里都有", blocks: [
+        { type: "table", head: ["维度", "例题（9/19 面包板）", "真题（9/26 纳新题）"], rows: [
+          ["信息给多少", "给完整电路图，照搭即可", "只给功能描述，图自己画"],
+          ["器件规模", "单芯片（74HC02 / SN74LS00）", "2–4 芯片（两片 74HC00；555＋4017＋4511）"],
+          ["状态数", "1 个功能、1 个灯", "3 路输出各自亮；4 种模式；0–9 循环序列"],
+          ["要不要写", "不用，搭出来就行", "必须「写出分析思路并设计实验图」"],
+          ["资料", "给芯片资料", "给器件资料，且要自己读真值表"],
+          ["时序", "静态逻辑", "要时钟＋计数（4017 的 Q0–Q9 轮流输出）"]
+        ]},
+        { type: "ok", t: "一句话总结：例题考「执行力」，真题考「设计力＋表达力」。评分老师要的不是一个能亮的东西，而是一份能说清为什么这样接的方案。" }
+      ]},
+      { name: "2. 六条跨度轴，直接搬到第二轮", blocks: [
+        { type: "list", items: [
+          "【轴1 信息减半】例题给图 → 真题给需求。二轮仿真很可能「给指标不给图」；PCB 可能「给原理图」也可能「给需求」；焊接会给你原理图，但洞洞板怎么走线它不管。",
+          "【轴2 器件变多】单芯片 → 多芯片级联。二轮：仿真多级（积分＋低通＋比较），PCB 多模块（三路电源），焊接多器件且含贴片。",
+          "【轴3 状态变多】1 个功能 → 多模式。二轮：多路输出、多档可调、多工况对比（快/慢、亮/灭、有载/空载）。",
+          "【轴4 必须写】真题明确要「分析思路」。二轮大概率要「设计思路＋验证方法」，写得出来才算真懂。",
+          "【轴5 现场读资料】给手册现场读。二轮会给陌生芯片或器件资料，考的是 30 秒抓关键参数。",
+          "【轴6 时序/动态】静态逻辑 → 时钟与计数。二轮的对应物是：仿真里的振荡与纹波、焊接里的延时与闪烁、PCB 里的电源时序。"
+        ]}
+      ]},
+      { name: "3. 所以二轮最可能考什么（我按这个排课）", blocks: [
+        { type: "table", head: ["模块", "最可能的考法", "对应的训练日"], rows: [
+          ["仿真", "①给指标设计并验证 ②给坏电路找错 ③读波形参数（频率/峰峰值/占空比）", "10.20、10.21、10.26、10.29、模拟卷 A/B"],
+          ["PCB", "①给原理图限时出板 ②给需求自己画原理图＋板 ③封装或 DRC 纠错", "10.23、10.24、10.27、10.30、模拟卷 A/B"],
+          ["焊接", "①给原理图在洞洞板上实现 ②贴片焊接 ③万用表检测与排故", "10.22、10.25、10.28、11.1、11.2、11.4、模拟卷 A/B"],
+          ["综合", "一份需求走完 仿真→PCB→焊接（你按「两种都练」选的）", "10.31 串联链①、11.1 串联链②"]
+        ]},
+        { type: "warn", t: "取舍原则：凡是不属于上面三块的能力（写 Verilog、单片机、复杂模电理论），一律不碰。你的目标是 20 天内在考核范围内练到又快又准，不是变成全面手。" }
+      ]},
+      { name: "4. 最可能挂在哪儿（按风险排序）", blocks: [
+        { type: "list", items: [
+          "【第1名 只会照图】培训教的是「照图做」，考核问的是「需求→方案」。解法：每个任务第二轮都要不看教程重做一次（计划里标了「拔高·变式」的条目）。",
+          "【第2名 手慢】每个动作都在现想。解法：限时训练，把「读图→画草图→动手」变成肌肉记忆（10.28、10.30、11.1 都是计时任务）。",
+          "【第3名 写不出来】做出来了但说不清。解法：每天一句复盘 ＋ 七段答题卡，考场上直接套。",
+          "【第4名 细节翻车】封装错、电解反接、连锡、示波器没共地。解法：三查清单 ＋ 封装核对表，考前只背这两张。"
+        ]}
+      ]}
+    ]},
+
+    { title: "二 · 仿真模块（Multisim）", intro: "培训只讲了「装软件、快捷键、放元件连线、方波转三角波示例」；作业二是照图画两张图。按跨度推，二轮不会考「照着画」，而是「给指标自己设计＋验证」。", cards: [
+      { name: "1. 题型预测", blocks: [
+        { type: "list", ol: true, items: [
+          "【T1 给指标设计】「设计一个输出 1kHz、峰峰值 4V 的三角波电路」，自己选拓扑、算参数、仿真验证、说明误差。",
+          "【T2 波形链】方波→三角波→正弦；或比较器整形、555 振荡。考多级联。",
+          "【T3 电源链】变压器→整流桥→滤波→7805/LM317，问纹波、压差、功耗、散热。",
+          "【T4 故障题】给一张错接的图，问现象、找错、怎么改。",
+          "【T5 仪器题】示波器测 ΔT/峰峰值/相位；函数发生器设幅度与偏置。",
+          "【T6 读数题】给波形截图，问频率、占空比、直流分量。"
+        ]}
+      ]},
+      { name: "2. 应对模板（六步，考场上照着走）", blocks: [
+        { type: "list", ol: true, items: [
+          "【抄需求】把题目里每个数字抄成指标清单（频率、幅值、增益、纹波、负载）。数字抄错，后面全废。",
+          "【选拓扑】从记忆里挑最熟的：放大→反相/同相；滤波→RC 或有源低通；振荡→555 或运放文氏；电源→整流+滤波+三端稳压。",
+          "【手算】用下面的公式表算出元件值，写在纸上（考卷上写出来就是分）。",
+          "【画图】先摆元件再连线；电源用 VCC/GND 符号；每个节点加探针。",
+          "【设仪器】源和示波器参数先设好，别边跑边调。",
+          "【跑→截图→对误差→写三句结论】「理论 1.02kHz，实测 0.98kHz，差 4%，原因是电容容差与运放带宽」。"
+        ]}
+      ]},
+      { name: "3. 必备公式表（先算后仿真的底气）", blocks: [
+        { type: "formula", t: "分压 <code>U2=U1·R2/(R1+R2)</code>　RC 时间常数 <code>τ=RC</code>（3τ 到 95%，5τ 到 99%）<br>RC 低通截止 <code>fc=1/(2πRC)</code>　反相增益 <code>Au=-Rf/R1</code>　同相增益 <code>Au=1+Rf/R1</code><br>积分器输出幅度（方波输入）<code>Up-p=Vin·T/(2RC)</code>　555 <code>f=1.44/((R1+2R2)C)</code>，占空比 <code>(R1+R2)/(R1+2R2)</code><br>LM317 <code>Vout=1.25·(1+R2/R1)</code>　纹波 <code>Vr≈I/(2fC)</code>　稳压块功耗 <code>P=(Vin-Vout)·I</code>" },
+        { type: "ok", t: "考场策略：每个数字都先估一遍量级。仿真结果和手算差一个数量级，99% 是接线接错了（比如反馈电阻开路、地没接）。" }
+      ]},
+      { name: "4. 仪器速设（这一步错，后面全白做）", blocks: [
+        { type: "list", items: [
+          "【函数发生器要 0~5V】正弦/方波默认是 ±2.5V 双极性；必须设「振幅 2.5V ＋ 偏置 2.5V」才是 0~5V。这是新手第一大坑。",
+          "【示波器】A 通道测输入、B 通道测输出；时基按 1/(5f) 估（1kHz 就用 0.2ms/格 左右）；触发用 A 通道上升沿。",
+          "【共地】示波器地夹必须接电路地，否则波形是浮的、看不出真值。",
+          "【测时间差】用光标（cursor）量 ΔT，别用肉眼数格子。"
+        ]}
+      ]},
+      { name: "5. 常见翻车点", blocks: [
+        { type: "list", items: [
+          "运放只接了单边电源（正负电源要成对，或者按单电源接法加偏置）",
+          "电容单位错（10µF 写成 10F）、频率单位错（1kHz 写成 1Hz）",
+          "波形没起来＝没接激励、没接地、或者探针没落在节点上",
+          "截图没把两条通道和参数一起拍进去，交上去等于没做"
+        ]}
+      ]}
+    ]},
+
+    { title: "三 · PCB 模块（立创EDA）", intro: "培训只讲了「层、封装、快捷键、布局三原则、走线宽度」，作业三是「照给定原理图画一块 10×10cm 的板」。二轮很可能把「照图」升级成「限时」和「给需求」。", cards: [
+      { name: "1. 题型预测", blocks: [
+        { type: "list", ol: true, items: [
+          "【T1 给原理图限时出板】最常见。限时 60–90min：原理图→封装→布局→布线→DRC。",
+          "【T2 给需求画原理图＋板】「做一个 5V 转 3.3V 的转接板，带 LED 指示和排针」，自己定器件、自己画图。",
+          "【T3 纠错题】给一个带错的工程：封装错、DRC 爆红、网络没连上，指出问题并改。",
+          "【T4 布局改进题】给一张布局截图，说问题（接口不贴边、输入输出交叉、电容离芯片太远）。",
+          "【T5 工艺题】层数、板厚、喷锡/OSP、阻焊、最小孔径、丝印要不要压在焊盘上。"
+        ]}
+      ]},
+      { name: "2. 应对模板（九步，按顺序别跳）", blocks: [
+        { type: "list", ol: true, items: [
+          "【建工程】选官方库（不要在陌生库里赌封装）。",
+          "【画原理图】网络标签代替长线；电源用 VCC/GND 符号；每个器件位号唯一。",
+          "【封装核对】照着下面的核对表逐个看，这一步最花时间也最值钱。",
+          "【板框】≤10×10cm（免费打板线）；板框放在原点附近，别跑到远处。",
+          "【布局】接口贴板边 → 大件先放 → 按信号流向排 → 小电容就近芯片引脚。",
+          "【布线】先电源和地（宽），再信号（细）；避免锐角；过孔别压焊盘。",
+          "【铺铜】GND 铺铜并加过孔；隐藏铺铜后检查有没有孤立铜皮。",
+          "【DRC】零错误、警告也看完；忽略项要写理由。",
+          "【丝印导出】标注 5V、GND、信号名、版本号；导出 Gerber 前用查看器过一眼。"
+        ]}
+      ]},
+      { name: "3. 封装核对表（错一个，板子报废）", blocks: [
+        { type: "table", head: ["器件", "封装", "最容易错的地方"], rows: [
+          ["LM317 / 7805", "TO-220 直插", "脚序 1=ADJ、2=OUT、3=IN，不是按从左到右"],
+          ["电解电容", "直插 RB 系列", "极性：丝印的圆角或斜纹是负极；反接会炸"],
+          ["DC 电源座", "DC-005", "焊盘孔径与脚距，孔太小插不进"],
+          ["排针/排母", "2.54mm", "要量引脚数，别把 1×4 放成 2×2"],
+          ["二极管", "DO-41 / 贴片", "方向：色环是负极；LED 长脚正极"],
+          ["贴片电阻/电容", "0805 / 0603", "位号与阻值对错行（复制粘贴最容易串）"],
+          ["LM317 贴片", "SOT-223", "大焊盘是散热脚（接 OUT 或铜皮），别当 GND"]
+        ]}
+      ]},
+      { name: "4. 布局四原则 ＋ 走线宽度", blocks: [
+        { type: "list", items: [
+          "【一条直线】输入接口→保护/开关→变换→输出端子，别让输入和输出绕回去。",
+          "【贴边】对外接口一律贴板边，方便插拔；电源线不要贴着板边缘走。",
+          "【就近】大电容进、小电容出；小电容（0.1µF）紧贴芯片电源脚。",
+          "【散热】散热片旁别放电解电容；发热器件靠板边或留铜皮。"
+        ]},
+        { type: "table", head: ["网络", "电流量级", "建议线宽"], rows: [
+          ["主电源（输入/输出）", "1A 以上", "1.5mm 以上"],
+          ["普通电源支路", "0.5A 左右", "1.0mm"],
+          ["信号线", "mA 级", "0.3–0.5mm"],
+          ["地", "回流通路", "尽量宽，能铺铜就铺铜"]
+        ]}
+      ]},
+      { name: "5. 常见翻车点", blocks: [
+        { type: "list", items: [
+          "原理图网络没连上（靠得近不等于连上），DRC 报悬空一定看",
+          "封装脚位镜像（尤其是自己画的封装）",
+          "板框不在原点 / 板框比器件还小",
+          "丝印压在焊盘上，焊接时被锡盖掉",
+          "下单时选错工艺（OSP 放久了会氧化，要尽快焊）"
+        ]}
+      ]}
+    ]},
+
+    { title: "四 · 焊接模块", intro: "培训讲了工具、直插、贴片（单脚固定＋拖焊）、吸锡器/吸锡带、洞洞板实现（翻面、用元件引脚代替飞线、万用表检测）。作业一是焊回字和学号。二轮最可能是「给图，限时，洞洞板上做出来」。", cards: [
+      { name: "1. 题型预测", blocks: [
+        { type: "list", ol: true, items: [
+          "【T1 洞洞板实现】给一张原理图，在洞洞板上做出来并点亮。这是最可能的题型。",
+          "【T2 焊点质量】焊图案/字符（回字、学号），看焊点是否均一、光亮、无拉尖。",
+          "【T3 贴片】0805、SOT-23、SOT-223，考单脚固定法和拖焊。",
+          "【T4 拆焊】用吸锡器或吸锡带拆一个多脚器件。",
+          "【T5 检测排故】给一块有虚焊/连锡/反接的板，用万用表找出问题。"
+        ]}
+      ]},
+      { name: "2. 洞洞板六步（限时的关键在第二步）", blocks: [
+        { type: "list", ol: true, items: [
+          "【读图圈三类】电源、地、信号各用一种颜色圈出来，先看懂再动手。",
+          "【画翻面草图】在纸上画出「从背面看」的走线：电源母线走一条、地母线走一条，跨线尽量少。这一步省下来，后面全是返工。",
+          "【规划引脚】用元件自己的引脚当导线（电阻腿、电容腿），飞线是最后手段。",
+          "【焊接顺序】先低后高、先小后大；IC 座最后焊；电解最后上。",
+          "【每五点一测】每焊 5 个点，万用表量一下有没有连锡。",
+          "【上电三查】电解极性、电源对地短路、限流电源从 5V 起。"
+        ]}
+      ]},
+      { name: "3. 焊点标准（怎么算合格）", blocks: [
+        { type: "table", head: ["项目", "合格", "不合格"], rows: [
+          ["形状", "圆锥形、表面光亮", "球状、拉尖、拉丝"],
+          ["浸润", "锡爬满焊盘、浸润角小", "锡缩成球、焊盘露铜"],
+          ["连锡", "相邻焊点分明", "锡桥把两点连上"],
+          ["虚焊", "元件脚与焊盘熔成一体", "表面看是焊了，一拉就掉"],
+          ["温度/时间", "325–350℃，2–3 秒一点", "低温久烫（焊盘翘）、高温瞬间（假焊）"]
+        ]},
+        { type: "ok", t: "练法：先在废板上连焊 20 个点找手感，再上真板。手不稳的时候宁可多花 1 秒，也别反复戳。" }
+      ]},
+      { name: "4. 上电前检查清单（背下来）", blocks: [
+        { type: "list", items: [
+          "【一查短路】万用表蜂鸣档量 VCC 与 GND，不响才继续。",
+          "【二查极性】电解电容、二极管、LED、IC 缺口方向，逐个对丝印。",
+          "【三查限流】可调电源限流设到 100–200mA，从 5V 起，看电流是否异常。",
+          "【四查温度】上电 10 秒摸一下稳压块，烫手立刻断电（多半是输出短路或压差太大）。"
+        ]}
+      ]},
+      { name: "5. 排故分段法（坏了怎么查）", blocks: [
+        { type: "list", ol: true, items: [
+          "先量电源：输入端有没有电压、稳压块输出有没有电压 → 电源不通就先修电源。",
+          "再量关键节点：运放输出、555 的 3 脚、比较器输出，看是「没信号」还是「信号不对」。",
+          "分段隔离：把后级断开，看前级是否正常，用二分法找坏的那一段。",
+          "常见原因排序：虚焊 → 连锡 → 极性反 → 器件坏 → 参数错。"
+        ]}
+      ]}
+    ]},
+
+    { title: "五 · 通用：写思路、读手册、控时间", intro: "这三样不占时间，但直接决定分数。一轮真题已经明确写了「写出分析思路并设计实验图」。", cards: [
+      { name: "1. 分析思路七段答题卡（考场上直接套）", blocks: [
+        { type: "list", ol: true, items: [
+          "【需求】用一句话复述题目要求，并把数字抄成指标。",
+          "【真值表/指标表】数字电路写真值表；模拟电路列指标清单。",
+          "【化简/选型】数字：卡诺图或公式化简；模拟：选拓扑并写公式。",
+          "【引脚分配】画一张表：芯片引脚 ↔ 功能 ↔ 接到哪。",
+          "【接线图/原理图】按引脚分配画，标网络名。",
+          "【验证方法】准备怎么测：示波器测哪、万用表测哪、期望值是多少。",
+          "【故障排查】如果不出结果，按什么顺序查（电源→输入→中间→输出）。"
+        ]},
+        { type: "ok", t: "这七段写下来，即使最后没做出来，也拿了大部分过程分——这就是「会表达」的价值。" }
+      ]},
+      { name: "2. 给资料题的 30 秒读法", blocks: [
+        { type: "list", ol: true, items: [
+          "【先看引脚图】找到 VCC、GND，把可用引脚圈出来。",
+          "【再看功能表】真值表/模式表，确定输入组合与输出关系。",
+          "【看极限参数】最大电压、最大电流、温度——防止一上电就烧。",
+          "【看典型应用电路】手册最后一定有一张，照它的外围改就是最快路径。"
+        ]},
+        { type: "warn", t: "平时就用半导小芯或 TI 官网查真手册练这个动作，别背参数。考核现场给你的是纸，你要能在 1 分钟内翻到功能表。" }
+      ]},
+      { name: "3. 考场时间分配", blocks: [
+        { type: "table", head: ["阶段", "时间", "做什么"], rows: [
+          ["通览", "5min", "看全部题目，标出「会做/能做/不会」，先做会的"],
+          ["搭电路类", "按题给", "读图→画草图→搭→测，不要一边想一边搭"],
+          ["设计题", "20min 内定方案", "先写七段的前三段，方案定了再动手"],
+          ["收尾", "15min", "查极性、短路、功能；能演示就演示"]
+        ]}
+      ]},
+      { name: "4. 三段话解释法（被问到就照着说）", blocks: [
+        { type: "list", items: [
+          "【为什么这样设计】「因为要 XX 指标，所以选了 XX 拓扑，参数按公式 XX 算出来。」",
+          "【怎么验证的】「先手算得到 XX，再用示波器/万用表测到 XX，误差 XX，原因是 XX。」",
+          "【坏了怎么查】「先查电源，再查关键节点，最后分段隔离。」"
+        ]}
+      ]}
+    ]}
+  ];
+
+  var MOCKS = [
+    { name: "仿真模拟卷 A · 给指标设计波形链", meta: "限时 90min · 满分 100 · 及格线 75 · 只给指标，不给电路图",
+      need: "LM324 或 UA741 数据手册（引脚图即可）、本页公式表；Multisim",
+      items: [
+        "设计一个「方波转三角波」电路：要求输出三角波频率 1kHz、峰峰值不低于 4V，单电源 5V 供电（可用偏置）。",
+        "先在纸上写三段：① 你选的拓扑和理由 ② 积分器 R、C 的取值推导（提示：Up-p=Vin·T/(2RC)）③ 若频率要改成 2kHz，R 或 C 怎么改、为什么。",
+        "Multisim 搭出来跑通：函数发生器（频率/振幅/偏置）、示波器（时基/通道/触发）设置要出现在截图里。",
+        "交付：双通道波形截图 + 实测频率与峰峰值 + 一句误差原因。"
+      ],
+      score: [
+        ["思路与计算", "30", "拓扑选对、公式用对、参数能在纸上推出来"],
+        ["电路正确性", "30", "接法无错、电源与地正确、能出波形"],
+        ["波形与读数", "20", "双通道截图清晰，频率与峰峰值读得出且接近目标"],
+        ["误差分析", "10", "能说出偏差来自容差、运放带宽或供电限制"],
+        ["时间", "10", "90min 内完成（含截图）"]
+      ],
+      fix: "峰峰值不够先别改电路：先确认积分器输入真的是 0~5V，而不是 ±2.5V 双极性。" },
+
+    { name: "仿真模拟卷 B · 电源链与纹波", meta: "限时 90min · 满分 100 · 及格线 75 · 只给指标，不给电路图",
+      need: "7805 / 整流桥手册（引脚与压差）、本页公式表；Multisim",
+      items: [
+        "搭一个 5V 稳压电源仿真：变压器次级 9V（有效值）→ 整流桥 → 滤波电容 1000µF → 7805 → 负载 100Ω。",
+        "先算三个数：① 负载电流 ② 纹波峰峰值（Vr≈I/(2fC)，全波整流按 100Hz）③ 7805 功耗、会不会烫。",
+        "仿真并测：整流后的直流电平、纹波峰峰值、7805 的输出电压。",
+        "把滤波电容换成 2200µF 再测一次，说明纹波怎么变、为什么。"
+      ],
+      score: [
+        ["思路与计算", "30", "三个数都算出来，公式与代入可见"],
+        ["电路正确性", "30", "整流桥方向、滤波位置、稳压块引脚都对"],
+        ["测量与读数", "20", "纹波用光标测出，数据完整"],
+        ["对比与解释", "10", "电容加大后纹波下降，并说明原因"],
+        ["时间", "10", "90min 内完成"]
+      ],
+      fix: "纹波测不出来，多半是示波器垂直档太大或耦合设错了——缩到 100mV/格、用 AC 耦合再看。" },
+
+    { name: "PCB 模拟卷 A · 给原理图限时出板", meta: "限时 90min · 满分 100 · 及格线 75 · 给原理图，限时出板",
+      need: "下面这段文字就是原理图（考核时会是图片）；立创EDA；封装一律直插",
+      items: [
+        "原理图（文字版）：NE555（DIP-8）＋ R1 10k ＋ R2 100k ＋ C1 10µF（电解）＋ C2 0.1µF ＋ LED1 串 1k 接 3 脚到 GND ＋ LED2 串 1k 接 VCC 到 3 脚 ＋ 5V 输入排针（2P）＋ 输出排针（2P）。",
+        "要求：板框不超过 5×5cm；电源线宽 ≥0.8mm；丝印标注 VCC、GND、OUT；DRC 零错误；全部直插封装。",
+        "过程记录：原理图→封装→布局→布线→DRC→丝印，每步写下用了多少分钟。",
+        "交付：原理图截图、PCB 2D 截图、DRC 报告截图。"
+      ],
+      score: [
+        ["原理图", "20", "网络正确、电源符号规范、无悬空网络"],
+        ["封装", "20", "直插封装选对，脚序与极性正确"],
+        ["布局", "20", "接口贴边、信号不来回交叉、限流电阻靠 LED"],
+        ["布线", "30", "电源线够宽、地连通、无锐角、过孔不压焊盘"],
+        ["DRC 与丝印", "10", "零错误 ＋ 丝印可读不压焊盘"]
+      ],
+      fix: "布线超时就砍：先把 VCC 和 GND 两条主干连完，其余用最短直线补，考核先看「通不通」，再看「美不美」。" },
+
+    { name: "PCB 模拟卷 B · 给需求自己画板", meta: "限时 90min · 满分 100 · 及格线 75 · 没有标准图，自洽就算过",
+      need: "立创EDA；器件自己定（直插优先）",
+      items: [
+        "需求：做一块「两路 LED 指示 ＋ 一个按键输入 ＋ 5V 输入端子」的小板。",
+        "自己画原理图：按键要有上拉（10k 到 VCC），两个 LED 各串限流电阻（1k），5V 与 GND 用排针引出，可选加一个 0.1µF 去耦电容。",
+        "板框不超过 5×5cm，DRC 零错误，丝印标 5V、GND、LED1、LED2、KEY。",
+        "交付：原理图、PCB、DRC 三张截图 ＋ 一句「我为什么这么布局」。"
+      ],
+      score: [
+        ["需求到原理图", "30", "上拉、限流、接口都考虑到，逻辑自洽"],
+        ["封装", "15", "封装与器件对得上"],
+        ["布局", "20", "端子与按键贴边、LED 在可见位置"],
+        ["布线", "25", "电源与地清晰、信号不绕"],
+        ["DRC 与丝印", "10", "零错误 ＋ 丝印齐全"]
+      ],
+      fix: "先画框图（端子→按键→LED→地），再落符号；直接放元件会越画越乱。" },
+
+    { name: "焊接模拟卷 A · 洞洞板限时实现（直插）", meta: "限时 90min · 满分 100 · 及格线 75 · 给原理图，洞洞板实现",
+      need: "NE555、10k、100k、10µF 电解、0.1µF、两个 LED、两个 1k、5V 电源、洞洞板",
+      items: [
+        "原理图（文字版）：NE555 无稳态，4 脚接 VCC、8 脚接 VCC、1 脚接 GND、5 脚经 0.1µF 到 GND；R1=10k 接 VCC 与 7 脚，R2=100k 接 7 脚与 6/2 脚，C=10µF 接 6/2 脚到 GND；3 脚输出。",
+        "LED1：VCC → 1k → LED1 → 3 脚（输出低时亮）；LED2：3 脚 → 1k → LED2 → GND（输出高时亮）——两灯交替。",
+        "90min 内在洞洞板上实现并点亮；要求电源与地各走一条母线、飞线不超过 3 根、不跨元件上方。",
+        "交付：正反面照片 ＋ 10 秒视频 ＋ 翻面草图照片。"
+      ],
+      score: [
+        ["功能", "40", "上电后两灯交替，频率约 1Hz"],
+        ["焊点质量", "30", "无连锡、无虚焊、无拉尖，锡量适中"],
+        ["走线规范", "20", "母线清晰、飞线少、不跨元件"],
+        ["时间", "10", "90min 内点亮"]
+      ],
+      fix: "不闪先查三处：4 脚（复位）有没有接高、8 脚有没有 5V、10µF 极性对不对。" },
+
+    { name: "焊接模拟卷 B · 直插电路复做与排错", meta: "限时 90min · 满分 100 · 练习用时，不代表实际考核时长",
+      need: "培训焊接作业中的直插元件、洞洞板、低压直流电源、万用表",
+      items: [
+        "任选培训作业中的直插电路，遮住原搭建照片，仅凭原理图重新规划洞洞板布局并焊接。",
+        "上电前逐项检查：电源正负、芯片方向、电解极性、连锡、短路和虚焊；写下检查结果。",
+        "限流低压上电，用万用表测关键节点并验证功能；若不工作，记录现象、提出至少两种可能原因并逐项排查。",
+        "交付：原理图标注、布局草图、正反面照片、关键测量值和简短排错记录。"
+      ],
+      score: [
+        ["功能", "30", "功能正常，关键节点测量合理"],
+        ["焊点与极性", "25", "无连锡/虚焊，器件方向正确"],
+        ["布局与接线", "20", "电源地清晰，按图连通，便于检查"],
+        ["安全检查", "15", "上电前完成短路、极性和供电检查"],
+        ["分析与时间", "10", "能说明排错逻辑并在练习时限内完成核心任务"]
+      ],
+      fix: "先不盲目补焊：断电后按电源路径、地线、芯片方向、关键节点逐段检查，再一次只改一个问题。" }
+  ];
+
+  var RES = [
+    { title: "A · 仿真模块（Multisim）", sub: "对应 10.20、10.21、10.26、10.29 与模拟卷 A/B", items: [
+      { k: "学A1", slot: "仪器", text: "函数发生器＋示波器的设置方法；重点是「振幅 2.5V＋偏置 2.5V 才得到 0~5V」这个坑", links: [L.msYiqi, L.msYiqiF, L.msBikeng, L.msBikengF],
+        note: ["CSDN 打不开就点「免费版：阿里云」或 B 站那条", "考核现场不会让你慢慢摸索仪器：源和示波器要在 3 分钟内设好"] },
+      { k: "学A2", slot: "RC/滤波", text: "RC 充放电与时间常数；照实验指导书做一遍仿真，练「先算 τ 再测」", links: [L.rcYuanli, L.rcLab],
+        note: ["10.20 侧重「会测会调」，10.26 侧重「算 τ 预测纹波」"] },
+      { k: "学A3", slot: "波形链", text: "LM324 方波→三角波→正弦全流程（培训示例的完整版）", links: [L.lm324, L.lm324v],
+        note: ["先照做一遍，再删图重搭一遍——第二遍才是真训练"] },
+      { k: "学A4", slot: "运放", text: "虚短虚断、反相/同相增益、加法器、比较器（含滞回）", links: [L.tangBi, L.tangBiF, L.compV, L.tangS],
+        note: ["优先掌握培训作业和示例需要的基本接法；其余公式作为选学拓展"] },
+      { k: "学A5", slot: "555", text: "555 无稳态：f=1.44/((R1+2R2)C) 与占空比，配中文计算器现场验算", links: [L.ne555, L.ne555V, L.c555],
+        note: ["培训没细讲 555，但一轮真题已经考了 555＋4017，二轮仿真很可能还会用"] },
+      { k: "学A6", slot: "稳压", text: "LM317 输出公式与选型；整流滤波纹波估算", links: [L.lm317, L.lm317c] },
+      { k: "学A7", slot: "手册", text: "LM324 / LM317 / NE555 / CD4511 官方手册（考核「给资料」题就练这个）", links: [L.dsLM324, L.dsLM317, L.dsNE555, L.cd4511t, L.semiee],
+        note: ["目标：1 分钟内翻到引脚图和功能表"] }
+    ]},
+    { title: "B · PCB 模块（立创EDA）", sub: "对应 10.23、10.24、10.27、10.30 与模拟卷 A/B", items: [
+      { k: "学B1", slot: "先学", text: "先按第三次培训和第三次作业完成指定原理图、封装、布局、布线、DRC；卡住时再查立创EDA官方文档", links: [L.lcedaDoc],
+        note: ["培训作业明确建议先用直插封装，不必为了拔高先学完整视频课或自行加复杂电路"] },
+      { k: "学B2", slot: "查漏", text: "需要补操作时，再看尚硅谷嘉立创EDA课程中与当前步骤相关的片段（元件、网络、封装、布局布线、DRC）", links: [L.sgg] },
+      { k: "学B3", slot: "封装", text: "封装尺寸怎么查：立创商城器件页、半导小芯手册的封装图", links: [L.lcsc, L.semiee, L.tiHome],
+        note: ["TO-220 的 1=ADJ、2=OUT、3=IN 必须记住，这是最常见的报废原因"] },
+      { k: "学B4", slot: "抄板", text: "立创开源平台搜「多路电源模块」，看别人怎么分区、怎么走电源线", links: [L.oshwhub],
+        note: ["对照自己的板子找 3 个差距，比看 10 个教程有用"] },
+      { k: "学B5", slot: "打样选做", text: "若确需打样，按作业要求控制 10×10cm 内并核对封装、尺寸、丝印与 Gerber；OSP 板到手尽快焊接。打样不是本次考核练习的前置条件", links: [L.jlc] }
+    ]},
+    { title: "C · 焊接模块", sub: "对应 10.22、10.25、10.28、11.1、11.2、11.4 与模拟卷 A/B", items: [
+      { k: "学C1", slot: "先学", text: "第一次培训《焊接入门知识》PDF 和培训视频：烙铁使用、焊点质量、直插元件、洞洞板布局、万用表检测", note: ["先练废板/练习板，再焊功能电路；重点理解原理图转洞洞板时的布局和翻面"] },
+      { k: "学C2", slot: "选做", text: "完成直插焊接与检查后，再尝试 0805 等贴片基础；贴片练习按手头器件和指导情况安排", links: [L.tiepian, L.tiepian2],
+        note: ["现有硬件作业强调直插封装，贴片不作为必备前置内容"] },
+      { k: "学C3", slot: "拆焊", text: "吸锡器与吸锡带的用法（多脚器件堆锡法）", links: [L.xhan, L.xidai] },
+      { k: "学C4", slot: "器件形状", text: "三极管/二极管/LED 极性、电解电容极性、IC 缺口方向", links: [L.diodeV, L.triode, L.triodeV],
+        note: ["上电三查里「极性」这一条就靠这些图像记忆"] }
+    ]},
+    { title: "D · 综合与方法", sub: "对应串联链（10.31、11.1）与考前（11.5–11.6）", items: [
+      { k: "学D1", slot: "电路基础", text: "KCL/KVL 与分压——11.4 电路分析课直接用得上，手算仿真的底子", links: [L.kclvl],
+        note: ["别把它当两门课：课堂上推的公式，当天就用 Multisim 验一遍"] },
+      { k: "学D2", slot: "需求反推", text: "给指标定参数的通用套路：先列指标 → 选拓扑 → 套公式 → 仿真校验 → 写误差", note: ["这条套路在仿真卷 A/B 里各练一次"] },
+      { k: "学D3", slot: "答题卡", text: "七段分析思路（需求→真值表/指标→选型→引脚分配→接线图→验证→排故）写在自己的纸上，考场上照抄", note: ["一轮真题明确要求「写出分析思路并设计实验图」"] }
+    ]},
+    { title: "E · 集创赛（原样保留）", sub: "11.8 起才动；考核前只当睡前材料", items: [
+      { k: "学E1", slot: "数电", text: "王文俊《数字电子技术基础》：第 1 章数制与码制、第 2 章逻辑代数（重点 9–11 集卡诺图）", links: [L.wang] },
+      { k: "学E2", slot: "Verilog", text: "小梅哥：语法→always→计数器→状态机；配 EDA Playground 在线跑", links: [L.xiaomei, L.xiaomei2, L.edap, L.edap2] },
+      { k: "学E3", slot: "模电", text: "= 学A4 ＋ LTspice 入门（知乎 403 就看视频版第 21、22 集）", links: [L.ltspice, L.ltspiceV, L.tangS] }
+    ]},
+    { title: "F · 应急：面包板/数字电路（万一考）", sub: "一轮的真题题型在这里；只在 11.5 补漏日用 30 分钟扫一遍", items: [
+      { k: "学F1", slot: "组合逻辑", text: "真值表→卡诺图→门实现（一轮考的比较器、编码器就是这一类）", links: [L.qhPdf, L.logisim] },
+      { k: "学F2", slot: "级联", text: "555 出时钟→CD4017 计数→CD4511 译码→数码管（一轮真题「520 循环播放器」的原型）", links: [L.cd4511t, L.ds4017, L.ne555, L.ne555V] }
+    ]}
+  ];
+
+  var TAG_NAME = { ddl:"社·死线/考核", sim:"社·仿真", pcb:"社·PCB", weld:"社·焊接", mock:"社·限时模拟", mix:"社·串联链", dig:"社·数字(备用)", race:"赛·集创赛（可牺牲）", dec:"赛·决策" };
+  var LEGEND = [
+    ["sim","仿真"],["pcb","PCB"],["weld","焊接"],["mock","限时模拟"],["mix","串联链"],["ddl","死线/考核"],
+    ["race","集创赛（可牺牲）"],["dec","决策"]
+  ];
+
   var idSeq = 0;
   PLAN.forEach(function (w) {
     w.days.forEach(function (d) {
       d.id = "d" + (idSeq++);
-      d.tasks = d.tasks.map(function (t) { return { k: t[0], slot: t[1], text: t[2], links: t[3] || null, id: d.id + "-" + (idSeq++) }; });
+      d.tasks = d.tasks.map(function (t) { return { k:t[0], slot:t[1], text:t[2], links:t[3]||null, note:t[4]||null, id:d.id+"-"+(idSeq++) }; });
     });
   });
 
-  var planWeeks = PLAN.slice(0, 5);   // 前 5 个 = 计划
-  var resWeek = PLAN[5];
-
-  // 今天标记（10.20–11.17 区间内高亮“今天”）——必须先算，后面匹配要用
-  function todayKey() {
-    var t = new Date();
-    return (t.getMonth() + 1) + "." + t.getDate();
-  }
+  function todayKey(){ var t = new Date(); return (t.getMonth()+1) + "." + t.getDate(); }
   var TK = todayKey();
+  var todayDay = null, allDays = [];
+  PLAN.forEach(function(w){ w.days.forEach(function(d){ allDays.push(d); }); });
 
-  // 找到“今天”对应的那一天（用于置顶卡片）
-  var todayDay = null;
-  planWeeks.forEach(function (w) {
-    w.days.forEach(function (d) {
-      var m = d.date.match(/(\d{1,2})\.(\d{1,2})/);
-      if (m && (m[1] + "." + m[2]) === TK) todayDay = d;
+  function dateNum(d){
+    var m = d.date.match(/(\d{1,2})\.(\d{1,2})/);
+    return m ? (parseInt(m[1],10)*100 + parseInt(m[2],10)) : 9999;
+  }
+  // “今天”优先精确匹配；匹配不到就取最近的一天（备战期内）
+  (function(){
+    var tkNum = (function(){ var m = TK.match(/(\d{1,2})\.(\d{1,2})/); return m ? parseInt(m[1],10)*100+parseInt(m[2],10) : -1; })();
+    var exact = allDays.filter(function(d){ return dateNum(d) === tkNum; })[0];
+    if (exact) { todayDay = exact; return; }
+    if (tkNum < 0) return;
+    var prev = null, next = null;
+    allDays.forEach(function(d){
+      var n = dateNum(d);
+      if (n <= tkNum && (!prev || dateNum(prev) < n)) prev = d;
+      if (n >= tkNum && (!next || dateNum(next) > n)) next = d;
     });
-  });
+    todayDay = prev || next;
+  })();
 
   var state = {};
   try { state = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch (e) { state = {}; }
 
   var total = 0;
-  (planWeeks.concat([resWeek])).forEach(function (w) {
-    w.days.forEach(function (d) { total += d.tasks.length; });
-  });
+  PLAN.forEach(function(w){ w.days.forEach(function(d){ total += d.tasks.length; }); });
 
-  function makeTaskRow(t) {
-    var row = document.createElement("div");
-    row.className = "task-row";
-    var lab = document.createElement("label");
-    lab.className = "task";
+  function el(tag, cls, txt){ var n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; }
+  function linkRow(links, ml){
+    var lk = document.createElement("div");
+    lk.className = "tk-links";
+    if (ml) lk.style.marginLeft = "0";
+    links.forEach(function(pair){
+      var a = document.createElement("a");
+      a.href = pair[1]; a.textContent = pair[0]; a.target = "_blank"; a.rel = "noopener";
+      lk.appendChild(a);
+    });
+    return lk;
+  }
+  function noteBox(note, ml){
+    var nt = document.createElement("div");
+    nt.className = "tk-note";
+    if (ml) nt.style.marginLeft = "0";
+    note.forEach(function(line, i){ if (i) nt.appendChild(document.createElement("br")); nt.appendChild(document.createTextNode(line)); });
+    return nt;
+  }
+
+  function makeTaskRow(t){
+    var row = el("div","task-row");
+    var lab = el("label","task");
     var cb = document.createElement("input");
-    cb.type = "checkbox";
-    cb.checked = !!state[t.id];
-    cb.dataset.tid = t.id;
-    var sp = document.createElement("span");
-    var kk = document.createElement("i");
-    kk.className = "k";
-    kk.textContent = t.k;
-    sp.appendChild(kk);
-    if (t.slot) {
-      var ks = document.createElement("i");
-      ks.className = "k";
-      ks.textContent = t.slot;
-      sp.appendChild(ks);
-    }
+    cb.type = "checkbox"; cb.checked = !!state[t.id]; cb.dataset.tid = t.id;
+    var sp = el("span");
+    sp.appendChild(el("i","k",t.k));
+    if (t.slot) sp.appendChild(el("i","k",t.slot));
     sp.appendChild(document.createTextNode(t.text));
-    lab.appendChild(cb); lab.appendChild(sp);
-    row.appendChild(lab);
-    if (t.links && t.links.length) {
-      var lk = document.createElement("div");
-      lk.className = "tk-links";
-      t.links.forEach(function (pair) {
-        var a = document.createElement("a");
-        a.href = pair[1]; a.textContent = pair[0];
-        a.target = "_blank"; a.rel = "noopener";
-        lk.appendChild(a);
-      });
-      row.appendChild(lk);
-    }
+    lab.appendChild(cb); lab.appendChild(sp); row.appendChild(lab);
+    if (t.links && t.links.length) row.appendChild(linkRow(t.links, false));
+    if (t.note && t.note.length) row.appendChild(noteBox(t.note, false));
     return row;
   }
 
-  // ===== 今日置顶卡片 + 倒计时 + 每日提醒 =====
-  function countdownText() {
+  function countdownText(){
     var t = new Date();
-    var target = new Date(t.getFullYear(), 10, 7); // 11.7 考核日（月份 0 基）
+    var target = new Date(t.getFullYear(), 10, 7);
     var diff = Math.round((target - t) / 86400000);
-    if (diff > 0) return "距离电子社考核日（11.7）还有 " + diff + " 天";
-    if (diff === 0) return "今天是电子社考核日！加油 💪";
-    return "电子社考核日（11.7）已过去 " + (-diff) + " 天";
+    if (diff > 0) return "距占位考核日 11.7 还有 " + diff + " 天（实际日期待通知，整块平移即可）";
+    if (diff === 0) return "占位考核日到了——若真实考核在别的日子，按 W2 六卷继续磨";
+    return "已过占位日 11.7（" + (-diff) + " 天）：把最后 6 天六卷平移到真实考核日前即可";
   }
 
-  var REMIND_KEY = "beizhan-remind-on";
+  var REMIND_KEY = "eclub-round2-remind";
+  function todayRemain(){ return todayDay ? todayDay.tasks.filter(function(t){ return !state[t.id]; }).length : 0; }
 
-  function todayRemain() {
-    if (!todayDay) return 0;
-    return todayDay.tasks.filter(function (t) { return !state[t.id]; }).length;
-  }
-
-  function buildTodayCard(root) {
-    var c = document.createElement("div");
-    c.className = "today-card";
-    c.id = "todayCard";
+  function buildTodayCard(root){
+    var c = el("div","today-card"); c.id = "todayCard";
     if (todayDay) {
-      var totalT = todayDay.tasks.length;
       c.innerHTML =
         '<div class="tc-top"><span class="tc-badge">今日</span><span class="tc-date"></span></div>' +
         '<div class="tc-theme"></div>' +
-        '<div class="tc-stat">今天 <b class="tc-remain"></b> 项待完成 / 共 ' + totalT + ' 项</div>' +
-        '<div class="tc-actions">' +
-          '<button class="tc-go" type="button">去完成 →</button>' +
-          '<button class="tc-remind" type="button">🔔 开启每日提醒</button>' +
-        '</div>' +
+        '<div class="tc-stat">今天 <b class="tc-remain"></b> 项待完成 / 共 ' + todayDay.tasks.length + ' 项</div>' +
+        '<div class="tc-actions"><button class="tc-go" type="button">去完成 →</button>' +
+        '<button class="tc-remind" type="button">🔔 开启每日提醒</button></div>' +
         '<div class="tc-countdown"></div>';
       c.querySelector(".tc-date").textContent = todayDay.date;
       c.querySelector(".tc-theme").textContent = todayDay.theme;
       c.querySelector(".tc-remain").textContent = todayRemain();
       c.querySelector(".tc-countdown").textContent = countdownText();
-      c.querySelector(".tc-go").addEventListener("click", function () {
+      c.querySelector(".tc-go").addEventListener("click", function(){
         document.querySelector('.tab[data-tab="plan"]').click();
-        var el = document.getElementById("day-" + todayDay.id);
-        var det = el && el.closest("details");
+        var el2 = document.getElementById("day-" + todayDay.id);
+        var det = el2 && el2.closest("details");
         if (det) det.open = true;
-        if (el) {
-          setTimeout(function () {
-            el.scrollIntoView({ behavior: "smooth", block: "center" });
-            el.classList.add("flash");
-            setTimeout(function () { el.classList.remove("flash"); }, 1200);
-          }, 60);
-        }
+        if (el2) setTimeout(function(){
+          el2.scrollIntoView({behavior:"smooth", block:"center"});
+          el2.classList.add("flash");
+          setTimeout(function(){ el2.classList.remove("flash"); }, 1200);
+        }, 60);
       });
       var rb = c.querySelector(".tc-remind");
       rb.addEventListener("click", toggleRemind);
       updateRemindBtn(rb);
     } else {
-      c.innerHTML =
-        '<div class="tc-top"><span class="tc-badge">提示</span></div>' +
+      c.innerHTML = '<div class="tc-top"><span class="tc-badge">提示</span></div>' +
         '<div class="tc-theme">今天是 ' + TK + '，不在 10.20–11.17 备战期内～</div>' +
         '<div class="tc-countdown">' + countdownText() + '</div>';
     }
     root.appendChild(c);
   }
-
-  function updateRemindBtn(btn) {
+  function updateRemindBtn(btn){
     if (!btn) return;
     var on = localStorage.getItem(REMIND_KEY) === "1";
     btn.textContent = on ? "🔔 每日提醒已开" : "🔔 开启每日提醒";
     btn.classList.toggle("on", on);
   }
-
-  function toggleRemind() {
-    if (!("Notification" in window)) {
-      alert("当前浏览器不支持系统通知，可用 App 内的「今日」卡片查看待办");
-      return;
-    }
-    if (localStorage.getItem(REMIND_KEY) === "1") {
-      localStorage.setItem(REMIND_KEY, "0");
-    } else {
-      Notification.requestPermission().then(function (p) {
-        if (p === "granted") { localStorage.setItem(REMIND_KEY, "1"); fireReminder(); }
-        else { alert("未允许通知权限，没法开启系统提醒"); }
+  function toggleRemind(){
+    if (!("Notification" in window)) { alert("当前浏览器不支持系统通知，可看 App 内的「今日」卡片"); return; }
+    if (localStorage.getItem(REMIND_KEY) === "1") localStorage.setItem(REMIND_KEY,"0");
+    else {
+      Notification.requestPermission().then(function(p){
+        if (p === "granted") { localStorage.setItem(REMIND_KEY,"1"); fireReminder(); }
+        else alert("未允许通知权限");
       });
     }
     updateRemindBtn(document.querySelector(".tc-remind"));
   }
-
-  function fireReminder() {
+  function fireReminder(){
     if (!("Notification" in window) || Notification.permission !== "granted") return;
-    var body = todayDay
-      ? ("今日 " + todayDay.date + " 还有 " + todayRemain() + " 项待完成，加油！")
-      : "打开看看今天的备战任务吧～";
-    try { new Notification("备战总清单 · 每日提醒", { body: body }); } catch (e) {}
+    var body = todayDay ? ("今日 " + todayDay.date + " 还有 " + todayRemain() + " 项待完成") : "看看今天的备战任务吧～";
+    try { new Notification("二轮备战 · 每日提醒", { body: body }); } catch (e) {}
+  }
+  function updateTodayCard(){
+    var c = document.getElementById("todayCard"); if (!c) return;
+    var r = c.querySelector(".tc-remain"); if (r) r.textContent = todayRemain();
   }
 
-  function updateTodayCard() {
-    var c = document.getElementById("todayCard");
-    if (!c) return;
-    var r = c.querySelector(".tc-remain");
-    if (r) r.textContent = todayRemain();
-  }
-
-  // 图例（补齐原版顶部的彩色标签说明）
-  function buildLegend(root) {
-    var row = document.createElement("div");
-    row.className = "legend-row";
-    [
-      ["ddl", "社·死线"], ["dig", "社·数字设计"], ["sim", "社·仿真"], ["pcb", "社·PCB"],
-      ["weld", "社·焊接"], ["race", "赛·集创赛（可牺牲）"], ["dec", "赛·决策"]
-    ].forEach(function (pair) {
-      var s = document.createElement("span");
-      s.className = "chip " + pair[0];
-      s.textContent = pair[1];
-      row.appendChild(s);
-    });
+  function buildLegend(root){
+    var row = el("div","legend-row");
+    LEGEND.forEach(function(p){ row.appendChild(el("span","chip "+p[0], p[1])); });
     root.appendChild(row);
   }
 
-  function buildPlan() {
+  function buildPlan(){
     var root = document.getElementById("viewPlan");
     buildTodayCard(root);
     buildLegend(root);
-    planWeeks.forEach(function (w) {
+    PLAN.forEach(function(w){
       var det = document.createElement("details");
-      det.className = "week";
-      if (w.open) det.open = true;
+      det.className = "week"; if (w.open) det.open = true;
       var sum = document.createElement("summary");
       sum.innerHTML = '<span class="wk-name"></span><span class="wk-count"></span><span class="chev">▶</span>';
       sum.querySelector(".wk-name").textContent = w.name;
       det.appendChild(sum);
-      var box = document.createElement("div");
-      box.className = "days";
-      w.days.forEach(function (d) {
-        var card = document.createElement("div");
-        card.className = "day";
-        card.id = "day-" + d.id;
-        var m = d.date.match(/(\d{1,2})\.(\d{1,2})/);
-        if (m && (m[1] + "." + m[2]) === TK) card.classList.add("today");
-        var top = document.createElement("div");
-        top.className = "day-top";
-        var dd = document.createElement("span");
-        dd.className = "day-date"; dd.textContent = d.date;
-        var tg = document.createElement("span");
-        tg.className = "day-tag " + d.tag; tg.textContent = TAG_NAME[d.tag];
-        top.appendChild(dd); top.appendChild(tg);
-        if (card.classList.contains("today")) {
-          var tb = document.createElement("span");
-          tb.className = "today-badge"; tb.textContent = "今天";
-          top.appendChild(tb);
-        }
-        var th = document.createElement("span");
-        th.className = "day-theme"; th.textContent = d.theme;
-        top.appendChild(th);
-        if (d.slot) {
-          var sl = document.createElement("span");
-          sl.className = "day-slot"; sl.textContent = d.slot;
-          top.appendChild(sl);
-        }
+      var box = el("div","days");
+      w.days.forEach(function(d){
+        var card = el("div","day"); card.id = "day-" + d.id;
+        if (dateNum(d) === (function(){ var m = TK.match(/(\d{1,2})\.(\d{1,2})/); return m ? parseInt(m[1],10)*100+parseInt(m[2],10) : -1; })()) card.classList.add("today");
+        var top = el("div","day-top");
+        top.appendChild(el("span","day-date",d.date));
+        top.appendChild(el("span","day-tag "+d.tag, TAG_NAME[d.tag] || d.tag));
+        if (card.classList.contains("today")) top.appendChild(el("span","today-badge","今天"));
+        top.appendChild(el("span","day-theme",d.theme));
+        if (d.slot) top.appendChild(el("span","day-slot",d.slot));
         card.appendChild(top);
-        d.tasks.forEach(function (t) { card.appendChild(makeTaskRow(t)); });
+        d.tasks.forEach(function(t){ card.appendChild(makeTaskRow(t)); });
         box.appendChild(card);
       });
       det.appendChild(box);
@@ -620,62 +1073,126 @@
     });
   }
 
-  function buildRes() {
-    var root = document.getElementById("viewRes");
-    resWeek.days.forEach(function (d) {
-      var g = document.createElement("div");
-      g.className = "res-group";
-      var head = document.createElement("div");
-      head.className = "res-head";
-      head.innerHTML = d.date + '<small>' + d.theme + '</small>';
-      g.appendChild(head);
-      d.tasks.forEach(function (t) {
-        var item = document.createElement("div");
-        item.className = "res-item";
-        var k = document.createElement("div");
-        k.className = "res-k"; k.textContent = t.k + " · " + t.slot;
-        var tx = document.createElement("div");
-        tx.className = "res-t"; tx.textContent = t.text;
-        item.appendChild(k); item.appendChild(tx);
-        if (t.links && t.links.length) {
-          var lk = document.createElement("div");
-          lk.className = "tk-links"; lk.style.marginLeft = "0";
-          t.links.forEach(function (pair) {
-            var a = document.createElement("a");
-            a.href = pair[1]; a.textContent = pair[0];
-            a.target = "_blank"; a.rel = "noopener";
-            lk.appendChild(a);
-          });
-          item.appendChild(lk);
-        }
-        g.appendChild(item);
+  function buildManual(){
+    var root = document.getElementById("viewMan");
+    MANUAL.forEach(function(g){
+      root.appendChild(el("div","sec-title",g.title));
+      if (g.intro) { var b = el("div","tips"); b.style.marginBottom="12px"; b.style.fontSize="13px"; b.innerHTML = g.intro; root.appendChild(b); }
+      g.cards.forEach(function(cd){
+        var c = el("div","card");
+        var h = el("h3", null, cd.name); c.appendChild(h);
+        if (cd.meta) c.appendChild(el("div","meta",cd.meta));
+        (cd.blocks || []).forEach(function(bl){
+          if (bl.type === "p") c.appendChild(el("p", null, bl.t));
+          else if (bl.type === "list") {
+            var l = document.createElement(bl.ol ? "ol" : "ul");
+            bl.items.forEach(function(it){ 
+              var li = document.createElement("li");
+              var mm = it.match(/^【([^】]+)】([\s\S]*)$/);
+              if (mm) { var bb = document.createElement("b"); bb.textContent = mm[1] + "  "; li.appendChild(bb); li.appendChild(document.createTextNode(mm[2])); }
+              else li.textContent = it;
+              l.appendChild(li);
+            });
+            c.appendChild(l);
+          }
+          else if (bl.type === "formula") { var f = el("div","formula"); f.innerHTML = bl.t; c.appendChild(f); }
+          else if (bl.type === "warn") c.appendChild(el("div","warn",bl.t));
+          else if (bl.type === "ok") c.appendChild(el("div","ok",bl.t));
+          else if (bl.type === "table") {
+            var tb = document.createElement("table"); tb.className = "sc";
+            var thead = document.createElement("thead"), tr = document.createElement("tr");
+            bl.head.forEach(function(h2){ tr.appendChild(el("th", null, h2)); });
+            thead.appendChild(tr); tb.appendChild(thead);
+            var tbody = document.createElement("tbody");
+            bl.rows.forEach(function(r){
+              var trr = document.createElement("tr");
+              r.forEach(function(cell, ci){ trr.appendChild(el("td", ci === 0 ? "n" : null, cell)); });
+              tbody.appendChild(trr);
+            });
+            tb.appendChild(tbody); c.appendChild(tb);
+          }
+        });
+        root.appendChild(c);
       });
-      root.appendChild(g);
     });
   }
 
-  function refresh() {
+  function buildMocks(){
+    var root = document.getElementById("viewMock");
+    var b = el("div","tips"); b.style.marginBottom = "12px"; b.style.fontSize="13px";
+    b.innerHTML = "<b>怎么用：</b>六套卷全部是「<b>只给需求、不给电路图</b>」的考法，对应第一轮那种跨度。规则：① 计时器必须开着，到点停手；② <b>先写思路</b>再动手（评分表里思路占 30 分，这也是一轮真题明确要求的「写出分析思路」）；③ 做完先自评，再翻手册对照；④ 同一类丢分出现两次，就写成一条「防呆规则」贴进错题本。";
+    root.appendChild(b);
+    MOCKS.forEach(function(m){
+      var c = el("div","card");
+      c.appendChild(el("h3", null, m.name));
+      c.appendChild(el("div","meta", m.meta));
+      if (m.need) { var p = el("p"); p.innerHTML = "<b>给什么资料：</b>" + m.need; c.appendChild(p); }
+      c.appendChild(el("p","kv")).innerHTML = "<b>题目：</b>";
+      var ol = document.createElement("ol");
+      m.items.forEach(function(it){ ol.appendChild(el("li", null, it)); });
+      c.appendChild(ol);
+      var t = document.createElement("table"); t.className = "sc";
+      var th = document.createElement("thead"), tr = document.createElement("tr");
+      ["评分项","分值","达标长什么样"].forEach(function(h){ tr.appendChild(el("th", null, h)); });
+      th.appendChild(tr); t.appendChild(th);
+      var tb = document.createElement("tbody");
+      m.score.forEach(function(r){
+        var trr = document.createElement("tr");
+        trr.appendChild(el("td","n",r[0]));
+        trr.appendChild(el("td","n",r[1]));
+        trr.appendChild(el("td", null, r[2]));
+        tb.appendChild(trr);
+      });
+      t.appendChild(tb); c.appendChild(t);
+      if (m.fix) c.appendChild(el("div","ok","自评后必做：" + m.fix));
+      root.appendChild(c);
+    });
+  }
+
+  function buildRes(){
+    var root = document.getElementById("viewRes");
+    var b = el("div","tips"); b.style.marginBottom="12px"; b.style.fontSize="12.5px"; b.style.lineHeight="1.7";
+    b.innerHTML = "<b>📌 使用说明：</b>① CSDN/知乎若提示登录或 VIP，原文旁都配了<b>「免费版」</b>胶囊；② <b>数据手册一律优先半导小芯(semiee) 或 TI 官网</b>——考核「给资料」题就是考你能不能 30 秒内从手册里抓到引脚、功能表、极限参数；③ 灰字块是具体页码/集数/要抄下来的数值。";
+    root.appendChild(b);
+    RES.forEach(function(g){
+      var gg = el("div","res-group");
+      var head = el("div","res-head");
+      head.innerHTML = g.title + "<small>" + g.sub + "</small>";
+      gg.appendChild(head);
+      g.items.forEach(function(it){
+        var item = el("div","res-item");
+        item.appendChild(el("div","res-k", it.k + " · " + it.slot));
+        item.appendChild(el("div","res-t", it.text));
+        if (it.links && it.links.length) item.appendChild(linkRow(it.links, true));
+        if (it.note && it.note.length) item.appendChild(noteBox(it.note, true));
+        gg.appendChild(item);
+      });
+      root.appendChild(gg);
+    });
+  }
+
+  function refresh(){
     var done = 0;
-    document.querySelectorAll('.task input[type="checkbox"]').forEach(function (cb) { if (cb.checked) done++; });
-    document.getElementById("stat").innerHTML = "已勾 <b>" + done + "</b> / " + total + " 项 · 10.20 – 11.17";
-    document.getElementById("barFill").style.width = (total ? (done / total * 100) : 0) + "%";
-    document.querySelectorAll(".day").forEach(function (card) {
+    document.querySelectorAll('#viewPlan .task input[type="checkbox"]').forEach(function(cb){ if (cb.checked) done++; });
+    document.getElementById("stat").innerHTML = "已勾 <b>" + done + "</b> / " + total + " 项 · 10.20 – 11.7（考核日待定）";
+    document.getElementById("barFill").style.width = (total ? (done/total*100) : 0) + "%";
+    document.querySelectorAll(".day").forEach(function(card){
       var cbs = card.querySelectorAll('.task input[type="checkbox"]');
       var all = cbs.length > 0;
-      for (var i = 0; i < cbs.length; i++) { if (!cbs[i].checked) { all = false; break; } }
+      for (var i=0;i<cbs.length;i++){ if (!cbs[i].checked) { all = false; break; } }
       card.classList.toggle("done", all);
     });
-    document.querySelectorAll(".week").forEach(function (det) {
+    document.querySelectorAll(".week").forEach(function(det){
       var cbs = det.querySelectorAll('.task input[type="checkbox"]');
       var d = 0;
-      for (var i = 0; i < cbs.length; i++) { if (cbs[i].checked) d++; }
-      var el = det.querySelector(".wk-count");
-      if (el) el.textContent = d + "/" + cbs.length;
+      for (var i=0;i<cbs.length;i++){ if (cbs[i].checked) d++; }
+      var s = det.querySelector(".wk-count");
+      if (s) s.textContent = d + "/" + cbs.length;
     });
     updateTodayCard();
   }
 
-  document.addEventListener("change", function (e) {
+  document.addEventListener("change", function(e){
     var cb = e.target;
     if (cb && cb.dataset && cb.dataset.tid) {
       state[cb.dataset.tid] = cb.checked;
@@ -684,55 +1201,46 @@
     }
   });
 
-  document.getElementById("resetBtn").addEventListener("click", function () {
+  document.getElementById("resetBtn").addEventListener("click", function(){
     if (!confirm("确定清空所有勾选吗？")) return;
     state = {};
     try { localStorage.removeItem(LS_KEY); } catch (e) {}
-    document.querySelectorAll('.task input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+    document.querySelectorAll('.task input[type="checkbox"]').forEach(function(cb){ cb.checked = false; });
     refresh();
   });
 
-  // 底部标签切换
-  document.querySelectorAll(".tab").forEach(function (btn) {
-    btn.addEventListener("click", function () {
+  var TABS = ["plan","mock","man","res","rules"];
+  document.querySelectorAll(".tab").forEach(function(btn){
+    btn.addEventListener("click", function(){
       var tab = btn.dataset.tab;
-      document.querySelectorAll(".tab").forEach(function (b) { b.classList.toggle("on", b === btn); });
-      document.getElementById("viewPlan").classList.toggle("on", tab === "plan");
-      document.getElementById("viewRes").classList.toggle("on", tab === "res");
-      document.getElementById("viewRules").classList.toggle("on", tab === "rules");
+      document.querySelectorAll(".tab").forEach(function(b){ b.classList.toggle("on", b === btn); });
+      TABS.forEach(function(t){
+        document.getElementById("view" + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle("on", t === tab);
+      });
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
 
-  buildPlan();
-  buildRes();
-  refresh();
+  buildPlan(); buildMocks(); buildManual(); buildRes(); refresh();
 
-  // 首次打开显示「安装到主屏幕」引导（点 × 后永久关闭）
-  (function () {
-    var KEY = "bz_pwa_tip_closed";
+  (function(){
+    var KEY = "bz_pwa_tip_closed_v2";
     if (localStorage.getItem(KEY)) return;
     var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     var txt = isIOS
-      ? '想当 App 用：点 Safari 底部 <b>分享按钮 ↑ → 「添加到主屏幕」</b>，桌面就有入口，点开全屏无地址栏。'
-      : '想当 App 用：点浏览器 <b>菜单 ⋮ → 「添加到主屏幕 / 添加到桌面」</b>，桌面就有图标，点开即用。';
+      ? '想当 App 用：点 Safari 底部 <b>分享 ↑ → 「添加到主屏幕」</b>，点开全屏无地址栏。'
+      : '想当 App 用：点浏览器 <b>菜单 ⋮ → 「添加到主屏幕」</b>，桌面就有图标。';
     var tip = document.getElementById("pwaTip");
     document.getElementById("ptTxt").innerHTML = txt;
     tip.style.display = "";
-    document.getElementById("ptX").addEventListener("click", function () {
+    document.getElementById("ptX").addEventListener("click", function(){
       tip.style.display = "none";
       try { localStorage.setItem(KEY, "1"); } catch (e) {}
     });
   })();
 
-  // 若已开启每日提醒且拥有通知权限，打开 App 时弹一次提醒
   if (localStorage.getItem(REMIND_KEY) === "1" && "Notification" in window && Notification.permission === "granted") {
     setTimeout(fireReminder, 1500);
-  }
-
-  // PWA：注册 Service Worker（仅在 https/http 下生效，本地 file:// 自动跳过）
-  if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
-    navigator.serviceWorker.register("sw.js").catch(function () {});
   }
 })();
 </script>
