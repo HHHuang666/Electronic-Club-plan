@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2f9e6e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="备战清单">
+<title>备战总清单 · 电子社＋集创赛</title>
+<style>
+  :root{
+    --bg:#f2f3f5; --card:#ffffff; --ink:#1a1a1a; --sub:#8a8f99;
+    --acc:#2f9e6e; --line:#e6e8ec; --shadow:0 1px 3px rgba(0,0,0,.06),0 6px 16px rgba(0,0,0,.04);
+    --ddl:#a01c1c; --dig:#6a3fb5; --sim:#1c4fa0; --pcb:#1c7a4a; --weld:#a05a1c; --race:#4a5578; --dec:#8a6d1a;
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-t: env(safe-area-inset-top, 0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:15px; line-height:1.5;
+    max-width:520px; margin:0 auto;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ===== 顶部栏 ===== */
+  .top{
+    position:sticky; top:0; z-index:20;
+    background:rgba(255,255,255,.92); backdrop-filter:saturate(180%) blur(12px);
+    padding:calc(10px + var(--safe-t)) 16px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  .top-row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .top h1{font-size:16px; font-weight:700; margin:0; letter-spacing:.2px;}
+  .reset{
+    font-size:12px; color:var(--sub); background:#fff; border:1px solid var(--line);
+    border-radius:8px; padding:5px 11px; cursor:pointer; white-space:nowrap;
+  }
+  .stat{font-size:12.5px; color:var(--sub); margin:8px 0 6px; font-variant-numeric:tabular-nums;}
+  .stat b{color:var(--acc); font-weight:700;}
+  .bar{height:9px; border-radius:99px; background:#e4e6ea; overflow:hidden;}
+  .bar > i{display:block; height:100%; width:0%; border-radius:inherit; background:linear-gradient(90deg,#34b07b,#2f9e6e); transition:width .3s ease;}
+  /* ===== 视图 ===== */
+  .view{display:none; padding:14px 14px calc(78px + var(--safe-b));}
+  .view.on{display:block;}
+  /* ===== 周 / 阶段卡片 ===== */
+  .week{border:1px solid var(--line); border-radius:16px; margin-bottom:12px; overflow:hidden; background:var(--card); box-shadow:var(--shadow);}
+  .week > summary{list-style:none; cursor:pointer; padding:14px 14px; display:flex; align-items:center; gap:10px; user-select:none;}
+  .week > summary::-webkit-details-marker{display:none;}
+  .wk-name{font-size:14.5px; font-weight:700; flex:1; line-height:1.35;}
+  .wk-count{font-size:12px; color:var(--sub); font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .chev{color:var(--sub); font-size:12px; transition:transform .15s; flex:none;}
+  .week[open] .chev{transform:rotate(90deg);}
+  .days{padding:0 12px 12px; display:flex; flex-direction:column; gap:10px;}
+  .day{border:1px solid #eef0f3; border-radius:12px; padding:10px 12px; background:#fcfcfd;}
+  .day.today{border-color:var(--acc); box-shadow:0 0 0 2px rgba(47,158,110,.15);}
+  .day-top{display:flex; align-items:center; gap:7px; margin-bottom:6px; flex-wrap:wrap;}
+  .day-date{font-size:13.5px; font-weight:700; font-variant-numeric:tabular-nums;}
+  .day-tag{font-size:10.5px; padding:2px 8px; border-radius:99px; color:#fff; font-weight:600;}
+  .day-tag.ddl{background:var(--ddl);} .day-tag.dig{background:var(--dig);}
+  .day-tag.sim{background:var(--sim);} .day-tag.pcb{background:var(--pcb);}
+  .day-tag.weld{background:var(--weld);} .day-tag.race{background:var(--race);}
+  .day-tag.dec{background:var(--dec);}
+  .day-theme{font-size:12px; color:var(--sub); flex:1 1 100%;}
+  .day-slot{font-size:11px; color:#c0392b; font-weight:600;}
+  .today-badge{font-size:10px; background:var(--acc); color:#fff; padding:1px 7px; border-radius:99px; font-weight:600;}
+  .day.done .day-theme,.day.done .day-date{color:#c4c4c4; text-decoration:line-through;}
+  .task-row{padding:9px 2px;}
+  .task-row + .task-row{border-top:1px dashed #eef0f3;}
+  .task{display:flex; align-items:flex-start; gap:11px; cursor:pointer;}
+  .task input{
+    -webkit-appearance:none; appearance:none; width:24px; height:24px; margin:1px 0 0; flex:none;
+    border:2px solid #cfd3da; border-radius:7px; background:#fff; position:relative; cursor:pointer; transition:.15s;
+  }
+  .task input:checked{background:var(--acc); border-color:var(--acc);}
+  .task input:checked::after{content:""; position:absolute; left:7px; top:3px; width:6px; height:11px; border:solid #fff; border-width:0 2.5px 2.5px 0; transform:rotate(45deg);}
+  .task span{font-size:14.5px; line-height:22px;}
+  .task .k{display:inline-block; font-style:normal; font-size:10.5px; padding:1px 7px; margin-right:6px; margin-bottom:2px; border:1px solid #d7dbe2; border-radius:99px; color:#7a818c; vertical-align:1px; background:#f6f7f9;}
+  .task input:checked + span{color:#b3b3b3; text-decoration:line-through;}
+  .tk-links{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0 35px;}
+  .tk-links a{font-size:11.5px; line-height:20px; padding:3px 10px; border-radius:99px; background:#eef3fd; color:#1c4fa0; text-decoration:none; font-weight:500;}
+  .tk-links a::before{content:"↗ "; font-size:10px;}
+  /* ===== 资源地图 ===== */
+  .res-group{border:1px solid var(--line); border-radius:16px; margin-bottom:12px; overflow:hidden; background:var(--card); box-shadow:var(--shadow);}
+  .res-head{padding:13px 14px; font-size:14.5px; font-weight:700; border-bottom:1px solid var(--line); background:#fafbfc;}
+  .res-head small{display:block; font-size:11.5px; color:var(--sub); font-weight:400; margin-top:2px;}
+  .res-item{padding:11px 14px;}
+  .res-item + .res-item{border-top:1px dashed #eef0f3;}
+  .res-k{font-size:11px; font-weight:700; color:var(--acc); margin-bottom:3px;}
+  .res-t{font-size:13.5px; line-height:21px; color:#333;}
+  /* ===== 规则 ===== */
+  .tips{font-size:13.5px; color:#444; line-height:23px; padding:16px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow);}
+  .tips b{color:var(--ink); font-weight:700;}
+  .tips .hl{background:#fff4d6; padding:0 3px; border-radius:4px;}
+  .tips p{margin:0 0 12px;} .tips p:last-child{margin:0;}
+  /* ===== 底部标签栏 ===== */
+  .tabbar{
+    position:fixed; left:50%; transform:translateX(-50%); bottom:0; z-index:30;
+    width:100%; max-width:520px;
+    display:flex; background:rgba(255,255,255,.96); backdrop-filter:saturate(180%) blur(12px);
+    border-top:1px solid var(--line); padding-bottom:var(--safe-b);
+  }
+  .tab{flex:1; border:0; background:none; padding:9px 0 8px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--sub); font-size:11px;}
+  .tab .ic{font-size:19px; line-height:1;}
+  .tab.on{color:var(--acc); font-weight:700;}
+  .empty{text-align:center; color:var(--sub); font-size:13px; padding:40px 0;}
+  /* ===== 今日卡片 ===== */
+  .today-card{background:linear-gradient(135deg,#2f9e6e,#34b07b); color:#fff; border-radius:16px; padding:14px 16px; margin-bottom:14px; box-shadow:var(--shadow);}
+  .today-card .tc-top{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+  /* 安装引导条 */
+  .pwa-tip{max-width:520px; margin:10px auto 0; padding:0 14px;}
+  .pwa-tip .pt-row{display:flex; align-items:flex-start; gap:9px; background:#eaf6f0; border:1px solid #cdeadd; border-radius:12px; padding:10px 12px;}
+  .pwa-tip .pt-ic{font-size:18px; line-height:1.4;}
+  .pwa-tip .pt-txt{flex:1; font-size:12.5px; color:#20563f; line-height:1.55;}
+  .pwa-tip .pt-txt b{color:#14532d;}
+  .pwa-tip .pt-x{border:none; background:none; color:#7fb99c; font-size:17px; padding:0 2px; cursor:pointer; line-height:1.2;}
+  .tc-badge{font-size:11px; font-weight:700; background:rgba(255,255,255,.25); padding:2px 9px; border-radius:99px;}
+  .tc-date{font-size:15px; font-weight:700;}
+  .tc-theme{font-size:13px; opacity:.95; margin-bottom:8px; line-height:1.4;}
+  .tc-stat{font-size:13px; margin-bottom:10px;}
+  .tc-stat b{font-size:17px; font-weight:800;}
+  .tc-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .tc-go,.tc-remind{font-size:12.5px; border:0; border-radius:9px; padding:8px 14px; cursor:pointer; font-weight:600;}
+  .tc-go{background:#fff; color:#1f7a52;}
+  .tc-remind{background:rgba(255,255,255,.2); color:#fff; border:1px solid rgba(255,255,255,.55);}
+  .tc-remind.on{background:#ffd54a; color:#7a5b00; border-color:#ffd54a;}
+  .tc-countdown{font-size:12px; opacity:.92; margin-top:10px;}
+  .day.flash{animation:flash 1.2s ease;}
+  @keyframes flash{0%,100%{box-shadow:0 0 0 2px rgba(47,158,110,.15);}30%{box-shadow:0 0 0 4px rgba(47,158,110,.55);}}
+  /* ===== 图例（和原版一一对应）===== */
+  .legend-row{display:flex; gap:6px; overflow-x:auto; padding:2px 0 12px; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+  .legend-row::-webkit-scrollbar{display:none;}
+  .legend-row .chip{flex:none; font-size:11px; padding:3px 10px; border-radius:99px; border:1px solid transparent; font-weight:600; white-space:nowrap;}
+  .chip.ddl{background:#fde3e3; color:#a01c1c;}
+  .chip.dig{background:#f0e9fd; color:#6a3fb5;}
+  .chip.sim{background:#e3ecfd; color:#1c4fa0;}
+  .chip.pcb{background:#e3f6ec; color:#1c7a4a;}
+  .chip.weld{background:#fdeee3; color:#a05a1c;}
+  .chip.race{background:#e9ecf5; color:#4a5578;}
+  .chip.dec{background:#fdf3d7; color:#8a6d1a;}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <h1>备战总清单</h1>
+    <button class="reset" id="resetBtn" type="button">清空勾选</button>
+  </div>
+  <div class="stat" id="stat">已勾 <b>0</b> / 0 项 · 10.20 – 11.17</div>
+  <div class="bar"><i id="barFill"></i></div>
+</header>
+
+<!-- 首次打开的安装引导（点 × 后永久消失，存在 localStorage） -->
+<div class="pwa-tip" id="pwaTip" style="display:none;">
+  <div class="pt-row">
+    <span class="pt-ic">📲</span>
+    <div class="pt-txt" id="ptTxt"></div>
+    <button class="pt-x" id="ptX" type="button" aria-label="关闭">×</button>
+  </div>
+</div>
+
+<main>
+  <section class="view on" id="viewPlan"></section>
+  <section class="view" id="viewRes"></section>
+  <section class="view" id="viewRules">
+    <div class="tips">
+      <p><b>铁律（优先级从高到低）：</b>① 电子社质量一定不丢——当天电子社任务没做完，灰色集创赛任务直接砍、不补、不愧疚；② 两个死线：作业二 <span class="hl">10.22</span>、作业三设计＋下单 <span class="hl">10.25</span>；③ 上电前万用表查短路和电解电容极性，只用 5V/可调电源，绝不接市电；④ 卡超 1 小时拍照问学长或 Kimi。</p>
+      <p><b>时间配额：</b>阶段一（10.20–11.6）电子社主线 周一~周四 3h／周五~周日 8h，集创赛插缝 周中≤1.5h／周末≤1h（全部耳机视频＋纸笔，不占电脑）；阶段二（11.8 起）全部额度切给集创赛。11.4（周三）起学校开《电路分析原理》，当天社/赛任务都让路给上课，晚间任务照常。</p>
+      <p><b>怎么学：</b>每条任务下面带 ↗ 的小蓝胶囊就是<b>可直接点开的学习链接</b>（原理→软件操作→实操指导书三段式配好了）。「资源」页按 学A1 编号汇总全部链接。</p>
+      <p><b>日期说明：</b>11.7 电子社考核日为预估（周六）。若通知不同：整体平移；平移超过 2 天则压缩 11.8–11.14 试错密度（每天砍到一个模块）。11.17 集创赛选方向死线不动。集创赛只需 11.17 前定方向，真正备赛在寒假–2 月底，另行安排。</p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button class="tab on" data-tab="plan"><span class="ic">📅</span>计划</button>
+  <button class="tab" data-tab="res"><span class="ic">🗺️</span>资源</button>
+  <button class="tab" data-tab="rules"><span class="ic">📌</span>规则</button>
+</nav>
+
+<script>
+(function(){
+  var LS_KEY = "merged-eclub-icplan-mobile-v1";
+
+  // ===== 学习链接库（均已核实可打开）=====
+  var L = {
+    msYiqi:  ["Multisim函数发生器＋示波器用法", "https://blog.csdn.net/weixin_63135906/article/details/128435386"],
+    msBikeng:["函数发生器避坑：振幅2.5V＋偏移2.5V才有0~5V", "https://blog.csdn.net/Cixil/article/details/104730263"],
+    rcYuanli:["RC充放电原理：τ=RC、63%/37%", "https://mcu.eetrend.com/content/100012062.html"],
+    rcLab:   ["RC仿真实验指导书（照做即可）", "https://m.chinaaet.com/article/130387"],
+    lm324:   ["LM324方波→三角波→正弦波(Multisim全流程)", "https://blog.csdn.net/qq_48771816/article/details/131352942"],
+    lm324v:  ["B站视频：三角波变正弦波电路", "https://www.bilibili.com/video/BV1fg4y1G7LL/"],
+    kkcl:    ["RC电路里的KVL/分压/时间常数", "https://mcu.eetrend.com/content/100012062.html"],
+    lcedaDoc:["立创EDA官方视频教程(原理图01-03/PCB01-04)", "https://prodocs.lceda.cn/cn/faq/video-tutorial/index.html"],
+    sgg:     ["尚硅谷嘉立创EDA全套教程(快速入门019=白嫖打样)", "https://www.bilibili.com/video/BV1AT421Y7DS/"],
+    wang:    ["王文俊《数字电子技术基础》97集合集", "https://space.bilibili.com/456163933/channel/collectiondetail?sid=873298"],
+    qhPdf:   ["组合逻辑设计：真值表→卡诺图→门实现(含比较器例题)", "https://www.tup.tsinghua.edu.cn/upload/books/yz/098270-01.pdf"],
+    bjq:     ["三人表决器：真值表→卡诺图→与非门实现", "https://m.guyuehome.com/44918"],
+    logisim: ["Logisim上手教程(中科大虚拟实验中心)", "https://vlab.ustc.edu.cn/guide/doc_logisim.html"],
+    logisim2:["Logisim图文入门(放门/开关/LED/仿真)", "https://blog.csdn.net/weixin_35920379/article/details/156175531"],
+    cd4511:  ["CD4511驱动共阴数码管手把手教程", "https://blog.csdn.net/weixin_35639680/article/details/156494379"],
+    cd4511t: ["CD4511引脚功能与真值表(LT/LE/BI)", "https://www.guayunfan.com/lilun/654095.html"],
+    ne555:   ["NE555LED追逐灯：原理+面包板搭建+公式推导", "https://blog.csdn.net/qq_41581588/article/details/163854512"],
+    c555:    ["555频率/占空比在线计算器", "https://www.schemalyzer.com/zh/tools/555-timer-calculator"],
+    seq555:  ["NE555+CD4017+CD4511序列显示设计参考", "https://wenku.csdn.net/answer/28joj5mk4y"],
+    duoxie:  ["多谐振荡器工作原理(9013双闪灯)", "https://blog.csdn.net/qq_36412526/article/details/131021321"],
+    shuangshan:["多谐振荡器双闪灯：制作+焊接专用原理图+元件清单", "https://kknews.cc/zh-cn/news/52okn5l.html"],
+    tang:    ["B站：唐老师讲运算放大器", "https://www.bilibili.com/video/BV16R4y1K7hS/"],
+    tangBi:  ["唐老师运放笔记：虚短虚断+反相/同相放大推导", "https://blog.csdn.net/qq_36823004/article/details/124542999"],
+    compV:   ["B站：唐老师讲电压比较器(过零/滞回)", "https://www.bilibili.com/video/BV1pJ411c7Eq/"],
+    lm317:   ["LM317/LM337分压电阻选型全指南(Vout=1.25(1+R2/R1))", "https://m.elecfans.com/article/8399738.html"],
+    lm317c:  ["LM317在线计算器(给目标电压算电阻)", "https://www.tskau.com/circuit/lm317"],
+    diodeV:  ["爱上半导体：二极管工作原理(动画)", "https://www.bilibili.com/video/BV1Qr4y1H7i8/"],
+    triode:  ["三极管工作原理(图文+动画视频)", "https://blog.csdn.net/qq_37083038/article/details/128426316"],
+    ltspice: ["LTspice入门教程①：分压电路瞬态仿真(知乎)", "https://zhuanlan.zhihu.com/p/408309960"],
+    ltspiceV:["B站：LTspice电路仿真中文教程合集", "https://www.bilibili.com/video/BV1Sy4y1m73e/"],
+    tiepian: ["贴片焊接：单脚固定法/拖焊法", "https://www.elecfans.com/zt/2567/"],
+    tiepian2:["手工焊接贴片元件图文教程", "https://blog.csdn.net/qq_38351824/article/details/88653969"],
+    xhan:    ["拆焊视频：吸锡器用法", "https://www.bilibili.com/video/BV1df4y137fr/"],
+    xidai:   ["拆焊视频：吸锡带用法", "https://www.bilibili.com/video/BV1JE421376r/"],
+    xiaomei: ["小梅哥《零基础轻松学习FPGA》(169集)", "https://www.bilibili.com/video/BV1va411c7Dz/"],
+    xiaomei2:["小梅哥FPGA设计思想与验证(30集:含计数器/状态机)", "https://www.bilibili.com/video/BV1KE411h7AZ/"],
+    edap:    ["EDA Playground使用笔记(注册/跑例/看波形)", "https://blog.csdn.net/ResumeProject/article/details/139300170"],
+    edap2:   ["EDA Playground官网(浏览器直接写Verilog)", "https://www.edaplayground.com/"]
+  };
+
+  var PLAN = [
+    { name: "阶段一① · 作业保命（死线优先）", range: "10.20 – 10.25", open: true, days: [
+      { date: "10.20 周二", tag: "sim", theme: "Multisim 练手＋作业二图一", tasks: [
+        ["做", "下午＋21:15后（社3h）", "RC 充电练手（函数发生器＋示波器看充放电）→ 画作业二图一（LM324 三角波→正弦波），仿真验证 A 三角波 B 正弦波",
+          [L.rcYuanli, L.msYiqi, L.msBikeng, L.rcLab, L.lm324, L.lm324v]],
+        ["检", "睡前（社）", "能说出限幅和二阶低通各自的作用"],
+        ["看", "睡前 40min（赛·可牺牲）", "集创赛数电①：王文俊数电第 1 章 数制与码制（耳机）", [L.wang]] ] },
+      { date: "10.21 周三", tag: "sim", theme: "作业二图二＋面包板预搭", tasks: [
+        ["做", "21:15 后（社3h）", "画作业二图二（9013 交替闪烁）仿真 → 面包板真器件搭一遍验证能闪（零成本排雷）", [L.duoxie, L.shuangshan]],
+        ["看", "晚自习（社）", "B 站“无稳态多谐振荡器 原理”", [L.duoxie]],
+        ["看", "睡前 40min（赛·可牺牲）", "集创赛数电②：王文俊第 2 章 逻辑代数（耳机，和数字专项同源，赚了）", [L.wang]] ] },
+      { date: "10.22 周四", tag: "ddl", theme: "★作业二死线★焊洞洞板", slot: "只有 3h，动作要快", tasks: [
+        ["做", "全天（社3h）", "按面包板验证过的布局焊洞洞板 → 万用表查 VCC-GND 短接＋电容极性 → 可调电源 5V 上电 → 拍照录视频按命名规则提交", [L.shuangshan]],
+        ["做", "睡前 30min（赛·可牺牲）", "纸笔：二进制/十六进制互转 10 题＋逻辑式化简 2 题（手熟即可）", [L.wang]] ] },
+      { date: "10.23 周五", tag: "pcb", theme: "第三次培训＋作业三原理图（上）", slot: "社8h", tasks: [
+        ["看", "1h（社）", "第三次培训视频：PCB 层/封装/过孔/快捷键/布局规则/走线宽度表"],
+        ["做", "6.5h（社）", "立创EDA（已装好）：新建工程 → 画作业三原理图：DC005→开关→输入电容→LM317 支路→7805 支路（全直插封装）", [L.lcedaDoc, L.sgg]],
+        ["看", "睡前 1h（赛·可牺牲）", "集创赛数电③：小梅哥 Verilog 语法（只看不动手，耳机）", [L.xiaomei]] ] },
+      { date: "10.24 周六", tag: "pcb", theme: "作业三原理图（下）＋布局", slot: "社8h", tasks: [
+        ["做", "2h（社）", "原理图收尾：AMS1117-3.3 支路＋三路 LED＋散热片＋排针；DRC 通过；逐一核对封装（电解极性、TO-220 脚序）", [L.lcedaDoc]],
+        ["做", "6h（社）", "转 PCB：板框 ≤10×10cm，按输入/开关→LM317→7805→1117 分模块布局；开始布线（电源线 ≥1mm）", [L.sgg]],
+        ["看", "睡前 1h（赛·可牺牲）", "集创赛数电④：小梅哥 always/阻塞非阻塞（耳机）", [L.xiaomei]] ] },
+      { date: "10.25 周日", tag: "ddl", theme: "★作业三死线★下单＋数字课启动", slot: "社8h，集创赛今天让路", tasks: [
+        ["做", "3h（社）", "布完线→铺 GND 铜→DRC 零错误→导出 Gerber", [L.lcedaDoc]],
+        ["买", "中午前（社）", "★嘉立创下单打板（10×10cm 免费 OSP；约 20 元选有铅喷锡更好焊），BOM 随单寄宿舍★"],
+        ["做", "3h（社）", "焊练习套件：多谐振荡器（＝作业二同原理）＋串联式稳压电路（预习作业三）；325°C、2–3 秒一点", [L.shuangshan, L.lm317]],
+        ["看", "2h（社）", "数字课①：王文俊第 2 章逻辑代数精读（公式化简＋卡诺图）——社赛两用", [L.wang, L.bjq]] ] }
+    ] },
+    { name: "阶段一② · 数字设计专项（主战场）", range: "10.26 – 11.1", open: false, days: [
+      { date: "10.26 周一", tag: "dig", theme: "组合逻辑方法论", tasks: [
+        ["做", "3h（社）", "方法论落地：最小项→化简→两级与非实现；纸面 3 题（多数表决器/半加器/奇偶判断）→ Logisim 秒级验证 → Multisim 用 74HC00 仿真其一", [L.qhPdf, L.bjq, L.logisim]],
+        ["看", "睡前 40min（赛·可牺牲）", "集创赛数电⑤：小梅哥 计数器章节（耳机）", [L.xiaomei2]] ] },
+      { date: "10.27 周二", tag: "dig", theme: "二轮例题①74HC02 双控开关", tasks: [
+        ["做", "3h（社）", "纸面设计（真值表→或非实现）→ Logisim 验证 → Multisim 数字仿真 → 面包板实物（模拟考核“给资料现场设计”流程）", [L.qhPdf, L.logisim]],
+        ["看", "睡前 40min（赛·可牺牲）", "集创赛数电⑥：小梅哥 状态机章节（耳机）", [L.xiaomei2]] ] },
+      { date: "10.28 周三", tag: "dig", theme: "二轮例题②4-2 编码器", tasks: [
+        ["做", "2.5h（社）", "4-2 编码器纸面设计（一轮挂掉的题型）→ Logisim → Multisim → 面包板 2 个 LED 显示编码", [L.qhPdf, L.logisim]],
+        ["顺", "0.5h（社）", "若 PCB 快递到了先签收收好，10.30 再焊"],
+        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电①：KCL/KVL/分压 视频（耳机，为仿真拔高和 11.4 电路课打底）", [L.kkcl]] ] },
+      { date: "10.29 周四", tag: "dig", theme: "一轮真题重做①比较器", tasks: [
+        ["做", "3h（社）", "重做一轮挂掉的 74HC00 一位比较器：A>B/A=B/A<B 三输出，纸面→Logisim→Multisim→面包板（库存有 SN74HC00N）", [L.qhPdf, L.logisim]],
+        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电②：RC 充放电/时间常数 视频（耳机）", [L.rcYuanli, L.rcLab]] ] },
+      { date: "10.30 周五", tag: "dig", theme: "数码管＋555＋焊电源板", slot: "社8h", tasks: [
+        ["做", "3h（社）", "CD4511＋共阴数码管点亮 0–9：读资料接 A/B/C/D＋LT/LE，开关拨 0–9（买的器件到了）", [L.cd4511, L.cd4511t]],
+        ["做", "3h（社）", "NE555 无稳态闪烁灯：换 R/C 测频率，验证 f≈1.44/((R1+2R2)C)——正是例题改参数题的公式", [L.ne555, L.c555]],
+        ["做", "2h（社）", "换脑子：焊收到的电源板（先低后高、TO-220 上散热片、电解极性；焊完万用表查）", [L.lm317]] ] },
+      { date: "10.31 周六", tag: "dig", theme: "挑战题：“520”循环播放器", slot: "社8h，集创赛今天让路", tasks: [
+        ["拆", "1h（社）", "拆三段：555 时钟→4017 计数→4511＋数码管，画框图", [L.ne555, L.seq555]],
+        ["做", "6h（社）", "分段搭再级联：555 出 ~1Hz 脉冲→4017 十输出轮流高→挑 5/2/0 接译码显示；不通就分段回查", [L.seq555, L.cd4511t]],
+        ["写", "1h（社）", "数字复盘笔记：6 个设计题的“真值表→实现”套路，写成自己的 checklist", [L.qhPdf]] ] },
+      { date: "11.1 周日", tag: "sim", theme: "仿真拔高（计时）＋PCB 提速＋贴片", slot: "社8h", tasks: [
+        ["考", "3h（社）", "仿真限时 3 题（每题计时 1h，先手算预测再验证）：反相放大器增益 / RC 低通截止频率 / LM317 输出电压", [L.tangBi, L.lm317, L.lm317c]],
+        ["做", "3h（社）", "PCB 提速：把 555 闪烁灯画成第二块小 PCB，目标 2.5h 内 原理图→PCB→DRC 通过", [L.lcedaDoc]],
+        ["做", "2h（社）", "焊接拔高：贴片镊子“一边固定法”＋吸锡带拆焊练一次", [L.tiepian, L.tiepian2, L.xidai]],
+        ["看", "睡前 1h（赛·可牺牲）", "集创赛模电③：爱上半导体 二极管（耳机）", [L.diodeV]] ] }
+    ] },
+    { name: "阶段一③ · 模拟考与考前", range: "11.2 – 11.7", open: false, days: [
+      { date: "11.2 周一", tag: "weld", theme: "电源板上电测试", tasks: [
+        ["做", "2.5h（社）", "电源板焊收尾＋万用表复查→可调电源上电测三路输出（5V/可调/3.3V）＋LED 指示→拍正反面照片视频", [L.lm317, L.lm317c]],
+        ["备", "0.5h（社）", "整理三次作业全部交付物"],
+        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电④：爱上半导体 三极管（耳机）", [L.triode]] ] },
+      { date: "11.3 周二", tag: "dig", theme: "模拟考①：设计＋仿真", tasks: [
+        ["考", "1.5h（社）", "数字设计限时题：让 Kimi 出一道陌生组合逻辑题（给芯片资料），纸面设计→Logisim 验证，计时", [L.qhPdf, L.logisim]],
+        ["考", "1.5h（社）", "仿真限时题：自出“整流＋滤波＋稳压”题，画完仿真出波形，写每部分作用", [L.lm317, L.rcLab]],
+        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电⑤：唐老师讲运放 第 1 讲 虚短虚断（耳机）", [L.tang, L.tangBi]] ] },
+      { date: "11.4 周三", tag: "weld", theme: "模拟考②：面包板＋PCB", slot: "白天有电路分析首课，认真听", tasks: [
+        ["考", "1.5h（社）", "面包板限时题：搭给定电路＋改参数变速（复刻例题第一题考法），计时", [L.c555, L.shuangshan]],
+        ["考", "1.5h（社）", "PCB 限时题：陌生小电路（如比较器）原理图→DRC，2h 内", [L.lcedaDoc]],
+        ["看", "睡前 40min（赛·可牺牲）", "集创赛模电⑥：唐老师讲运放 第 2–3 讲（耳机）", [L.tang]] ] },
+      { date: "11.5 周四", tag: "dig", theme: "补漏＋理论速览", tasks: [
+        ["做", "2h（社）", "只补模拟考暴露的最弱一项（优先序：数字设计＞PCB 速度＞仿真＞焊接）", [L.qhPdf]],
+        ["看", "1h（社）", "理论速览：三次培训 PPT＋走线宽度表＋布局规则＋焊接要点＋数字设计 checklist"],
+        ["休", "（赛）", "集创赛今日休，养精神"] ] },
+      { date: "11.6 周五", tag: "dig", theme: "考前轻复习（≤2h）", tasks: [
+        ["看", "随意", "只看数字 checklist 和理论速览笔记，不开新内容，早睡"],
+        ["检", "装备", "烙铁/万用表/镊子/斜口钳/焊锡丝装包（若考核要求自带）"] ] },
+      { date: "11.7 周六", tag: "ddl", theme: "★电子社考核日（预估）★", tasks: [
+        ["考", "现场", "节奏：先通览全部题目→先做有把握的（搭电路类）→设计题先写真值表再动手→留 15 分钟自查极性/短路"],
+        ["考", "心态", "给芯片资料先画管脚图；给公式先代数值估算；一切电路先算再搭"] ] }
+    ] },
+    { name: "阶段二 · 集创赛压缩试错（全额时间）", range: "11.8 – 11.14", open: false, days: [
+      { date: "11.8 周日", tag: "race", theme: "数字实操①：Verilog 环境＋流水灯", slot: "9h", tasks: [
+        ["做", "上午", "EDA Playground 注册上手（不装 Vivado），敲第一个模块并编译", [L.edap, L.edap2]],
+        ["做", "下午", "小梅哥视频挑重点回顾（语法/always/计数器），写流水灯＋偶数分频器，波形验证", [L.xiaomei, L.xiaomei2]],
+        ["写", "晚上", "记录：和电子社数字专项（面包板逻辑）相比，写代码的感觉如何"] ] },
+      { date: "11.9 周一", tag: "race", theme: "数字实操②：秒表主体", slot: "4.5h", tasks: [
+        ["做", "2.5h", "秒表：计数＋分频＋按键启停消抖（简化显示：两位静态数码管或 4 个 LED 二进制输出）", [L.xiaomei2]],
+        ["做", "1h", "状态机写法对比练习（若卡壳直接跳过，不恋战）"],
+        ["写", "1h", "数字侧 200 字体验总结＋1–5 分（必须写：电子社的经历是最重要参照）"] ] },
+      { date: "11.10 周二", tag: "race", theme: "模拟实操①：运放＋滤波", slot: "4.5h", tasks: [
+        ["看", "0.5h", "LTspice 教程 01–02 快速过（你已会 Multisim，只是换个壳）", [L.ltspice, L.ltspiceV]],
+        ["做", "2h", "反相放大器仿真验证手算＋RC 低通 AC 分析测截止频率", [L.tangBi]],
+        ["做", "1.5h", "三极管共射放大：看到输出比输入大；改集电极电阻对比失真", [L.triode]] ] },
+      { date: "11.11 周三", tag: "race", theme: "模拟实操②：振荡器＋稳压", slot: "4.5h", tasks: [
+        ["做", "2h", "迟滞比较器＋RC 方波发生器仿真", [L.compV]],
+        ["做", "2h", "稳压专题：把电子社电源板（LM317/7805/1117）复盘成小报告——压差、功耗、散热，这正是曾益慧创 LDO 赛道的直接经验", [L.lm317]],
+        ["写", "0.5h", "一句话记录体感：模电和数电哪个让你“烦但想解决”"] ] },
+      { date: "11.12 周四", tag: "race", theme: "模拟实操③：收尾＋打分", slot: "4.5h", tasks: [
+        ["做", "2h", "重做本周最不爽的仿真一遍，存好截图和参数"],
+        ["写", "1.5h", "模拟侧 200 字体验总结＋1–5 分"],
+        ["看", "1h", "唐老师运放剩下的集数补缺（耳机）", [L.tang]] ] },
+      { date: "11.13 周五", tag: "race", theme: "补漏＋两侧对比", slot: "9h", tasks: [
+        ["做", "上午", "最弱一侧再来一遍（数电→秒表加功能；模电→滤波器/放大器重跑）"],
+        ["写", "下午", "两侧分数对比表：分数 / 卡住时的心情 / 哪个作品更想演示给人看（三问定方向的素材）"],
+        ["备", "晚上", "翻电子社阶段的复盘笔记：面包板数字设计 vs 模电仿真，你的体感 already 记录在案"] ] },
+      { date: "11.14 周六", tag: "race", theme: "机动缓冲日", slot: "9h 内", tasks: [
+        ["做", "按需", "前六天没完成的模块补完；都做完了就把秒表/滤波器作品打磨到能演示"],
+        ["休", "至少半天", "睡到自然醒，电子社考核刚结束，你辛苦了"] ] }
+    ] },
+    { name: "决策周 · 11.17 方向选择死线", range: "11.15 – 11.17", open: false, days: [
+      { date: "11.15 周日", tag: "dec", theme: "三问定方向", slot: "9h", tasks: [
+        ["问", "上午", "翻全部体验日志（电子社 10.26–11.7 的体感＋集创赛两周试错）：哪边分数高？哪边卡住更“烦但想解决”？哪个作品更想演示给人看？"],
+        ["查", "下午", "按选定倾向调研细分赛道：模电侧＝光电传感器模拟前端（国家集创中心）/LDO 稳压器（曾益慧创）；数电侧＝Robei 控制电路（Verilog）；确认自己组别能报哪些"],
+        ["备", "晚上", "列出两个候选方向的一页对比（优势/风险/备赛计划）"] ] },
+      { date: "11.16 周一", tag: "dec", theme: "最终选择＋报名材料", slot: "4.5h 内", tasks: [
+        ["决", "上午", "按三问打分定方向（平局→选数字/FPGA）"],
+        ["备", "下午", "准备报名材料；和电子社学长聊聊你的选择（他们最懂你的实操水平）"],
+        ["告", "晚上", "把选择告诉 Kimi，排寒假–2 月的备赛计划"] ] },
+      { date: "11.17 周二", tag: "dec", theme: "★方向选择提交（死线）★", tasks: [
+        ["办", "白天", "提交方向选择"],
+        ["检", "晚上", "确认提交成功，截图存档"] ] }
+    ] },
+    { name: "学习资源地图（任务里的链接按编号在这里汇总）", range: "按编号查", open: false, days: [
+      { date: "A 数字设计", tag: "dig", theme: "对应 10.25–10.31 主战场", tasks: [
+        ["学A1", "逻辑代数/卡诺图", "王文俊《数字电子技术基础》第 2 章；只看化简部分", [L.wang]],
+        ["学A2", "组合逻辑设计", "核心套路：真值表→表达式→化简→门实现（清华讲义含比较器完整例题）", [L.qhPdf, L.bjq]],
+        ["学A3", "译码/数码管", "CD4511 引脚与真值表；手册：半导小芯 semiee.com 搜 CD4511", [L.cd4511t, L.cd4511]],
+        ["学A4", "触发器/计数器", "王文俊第 5、6 章选看（理解 CD4017 的 Q0–Q9 轮流输出即可）", [L.wang]],
+        ["学A5", "NE555", "记公式 f≈1.44/((R1+2R2)C)，计算器直接算", [L.ne555, L.c555]],
+        ["学A6", "Logisim", "会放门、开关、LED、跑仿真就够", [L.logisim, L.logisim2]] ] },
+      { date: "B 模电与仿真", tag: "sim", theme: "对应 10.20–10.22、11.1、阶段二", tasks: [
+        ["学B1", "KCL/KVL/分压", "配合纸笔手算；RC 文章里 KVL 的应用讲得清楚", [L.kkcl]],
+        ["学B2", "RC 充放电", "τ=RC、63%/37%、3~5τ 充满；仿真实验指导书照做", [L.rcYuanli, L.rcLab]],
+        ["学B3", "二极管/稳压管", "爱上半导体动画，20 分钟看懂单向导电", [L.diodeV]],
+        ["学B4", "三极管", "图文+动画：Ic=βIb、截止/放大/饱和三态", [L.triode]],
+        ["学B5", "运算放大器", "唐老师讲运放第 1–3 讲（虚短虚断→反相/同相→滤波）；吃力退回王文俊模电“集成运算放大器”章", [L.tang, L.tangBi]],
+        ["学B6", "Multisim 操作", "以社团第二次培训视频为主；仪器用法和避坑看这两篇", [L.msYiqi, L.msBikeng]],
+        ["学B7", "LTspice", "入门①分压瞬态→入门②RC低通AC分析；视频合集查漏补缺", [L.ltspice, L.ltspiceV]] ] },
+      { date: "C PCB", tag: "pcb", theme: "对应 10.23–10.25、10.29、11.1", tasks: [
+        ["学C1", "PCB 基础", "社团第三次培训视频（层/封装/过孔/规则/走线宽度表）"],
+        ["学C2", "立创EDA 操作", "官方教程：原理图 01–03、PCB 01–04；尚硅谷全套备用", [L.lcedaDoc, L.sgg]],
+        ["学C3", "布局布线进阶", "立创开源 oshwhub.com 搜“多路开关电源模块”抄板；对照自己板找问题", [L.sgg]],
+        ["学C4", "芯片手册/封装", "半导小芯 semiee.com、立创商城商品页 datasheet、TI 官网 ti.com.cn——考核给资料题就靠平时练这个"] ] },
+      { date: "D 焊接", tag: "weld", theme: "对应 10.22、10.25、10.30、11.1–11.2", tasks: [
+        ["学D1", "焊接基础", "社团第一次培训视频＋《焊接入门知识》PDF 复读（直插/贴片/虚焊/保养）"],
+        ["学D2", "拆焊", "培训 PDF 里附的两条 B 站视频", [L.xhan, L.xidai]],
+        ["学D3", "贴片电烙铁法", "单脚固定法＋拖焊法；用你买的 FZT651 先练 SOT-223", [L.tiepian, L.tiepian2]],
+        ["学D4", "万用表", "胜利万用表随表说明书＋B 站搜“万用表 蜂鸣档 测通断”"] ] },
+      { date: "E 集创赛", tag: "race", theme: "对应 10.20–10.27 晚＋11.8–11.14", tasks: [
+        ["学E1", "数电基础", "王文俊第 1 章（数制与码制）＋第 2 章（逻辑代数）——与学A1 是同一批视频，社赛两用", [L.wang]],
+        ["学E2", "Verilog/FPGA", "小梅哥：语法→always→计数器→状态机按集看；配合 EDA Playground 在线仿真", [L.xiaomei, L.xiaomei2, L.edap]],
+        ["学E3", "模电方向", "= 学B5 ＋ 学B7 组合使用", [L.tang, L.ltspice]] ] }
+    ] }
+  ];
+
+  var TAG_NAME = { ddl: "社·死线", dig: "社·数字", sim: "社·仿真", pcb: "社·PCB", weld: "社·焊接", race: "赛", dec: "赛·决策" };
+  var idSeq = 0;
+  PLAN.forEach(function (w) {
+    w.days.forEach(function (d) {
+      d.id = "d" + (idSeq++);
+      d.tasks = d.tasks.map(function (t) { return { k: t[0], slot: t[1], text: t[2], links: t[3] || null, id: d.id + "-" + (idSeq++) }; });
+    });
+  });
+
+  var planWeeks = PLAN.slice(0, 5);   // 前 5 个 = 计划
+  var resWeek = PLAN[5];
+
+  // 今天标记（10.20–11.17 区间内高亮“今天”）——必须先算，后面匹配要用
+  function todayKey() {
+    var t = new Date();
+    return (t.getMonth() + 1) + "." + t.getDate();
+  }
+  var TK = todayKey();
+
+  // 找到“今天”对应的那一天（用于置顶卡片）
+  var todayDay = null;
+  planWeeks.forEach(function (w) {
+    w.days.forEach(function (d) {
+      var m = d.date.match(/(\d{1,2})\.(\d{1,2})/);
+      if (m && (m[1] + "." + m[2]) === TK) todayDay = d;
+    });
+  });
+
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch (e) { state = {}; }
+
+  var total = 0;
+  (planWeeks.concat([resWeek])).forEach(function (w) {
+    w.days.forEach(function (d) { total += d.tasks.length; });
+  });
+
+  function makeTaskRow(t) {
+    var row = document.createElement("div");
+    row.className = "task-row";
+    var lab = document.createElement("label");
+    lab.className = "task";
+    var cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!state[t.id];
+    cb.dataset.tid = t.id;
+    var sp = document.createElement("span");
+    var kk = document.createElement("i");
+    kk.className = "k";
+    kk.textContent = t.k;
+    sp.appendChild(kk);
+    if (t.slot) {
+      var ks = document.createElement("i");
+      ks.className = "k";
+      ks.textContent = t.slot;
+      sp.appendChild(ks);
+    }
+    sp.appendChild(document.createTextNode(t.text));
+    lab.appendChild(cb); lab.appendChild(sp);
+    row.appendChild(lab);
+    if (t.links && t.links.length) {
+      var lk = document.createElement("div");
+      lk.className = "tk-links";
+      t.links.forEach(function (pair) {
+        var a = document.createElement("a");
+        a.href = pair[1]; a.textContent = pair[0];
+        a.target = "_blank"; a.rel = "noopener";
+        lk.appendChild(a);
+      });
+      row.appendChild(lk);
+    }
+    return row;
+  }
+
+  // ===== 今日置顶卡片 + 倒计时 + 每日提醒 =====
+  function countdownText() {
+    var t = new Date();
+    var target = new Date(t.getFullYear(), 10, 7); // 11.7 考核日（月份 0 基）
+    var diff = Math.round((target - t) / 86400000);
+    if (diff > 0) return "距离电子社考核日（11.7）还有 " + diff + " 天";
+    if (diff === 0) return "今天是电子社考核日！加油 💪";
+    return "电子社考核日（11.7）已过去 " + (-diff) + " 天";
+  }
+
+  var REMIND_KEY = "beizhan-remind-on";
+
+  function todayRemain() {
+    if (!todayDay) return 0;
+    return todayDay.tasks.filter(function (t) { return !state[t.id]; }).length;
+  }
+
+  function buildTodayCard(root) {
+    var c = document.createElement("div");
+    c.className = "today-card";
+    c.id = "todayCard";
+    if (todayDay) {
+      var totalT = todayDay.tasks.length;
+      c.innerHTML =
+        '<div class="tc-top"><span class="tc-badge">今日</span><span class="tc-date"></span></div>' +
+        '<div class="tc-theme"></div>' +
+        '<div class="tc-stat">今天 <b class="tc-remain"></b> 项待完成 / 共 ' + totalT + ' 项</div>' +
+        '<div class="tc-actions">' +
+          '<button class="tc-go" type="button">去完成 →</button>' +
+          '<button class="tc-remind" type="button">🔔 开启每日提醒</button>' +
+        '</div>' +
+        '<div class="tc-countdown"></div>';
+      c.querySelector(".tc-date").textContent = todayDay.date;
+      c.querySelector(".tc-theme").textContent = todayDay.theme;
+      c.querySelector(".tc-remain").textContent = todayRemain();
+      c.querySelector(".tc-countdown").textContent = countdownText();
+      c.querySelector(".tc-go").addEventListener("click", function () {
+        document.querySelector('.tab[data-tab="plan"]').click();
+        var el = document.getElementById("day-" + todayDay.id);
+        var det = el && el.closest("details");
+        if (det) det.open = true;
+        if (el) {
+          setTimeout(function () {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+            el.classList.add("flash");
+            setTimeout(function () { el.classList.remove("flash"); }, 1200);
+          }, 60);
+        }
+      });
+      var rb = c.querySelector(".tc-remind");
+      rb.addEventListener("click", toggleRemind);
+      updateRemindBtn(rb);
+    } else {
+      c.innerHTML =
+        '<div class="tc-top"><span class="tc-badge">提示</span></div>' +
+        '<div class="tc-theme">今天是 ' + TK + '，不在 10.20–11.17 备战期内～</div>' +
+        '<div class="tc-countdown">' + countdownText() + '</div>';
+    }
+    root.appendChild(c);
+  }
+
+  function updateRemindBtn(btn) {
+    if (!btn) return;
+    var on = localStorage.getItem(REMIND_KEY) === "1";
+    btn.textContent = on ? "🔔 每日提醒已开" : "🔔 开启每日提醒";
+    btn.classList.toggle("on", on);
+  }
+
+  function toggleRemind() {
+    if (!("Notification" in window)) {
+      alert("当前浏览器不支持系统通知，可用 App 内的「今日」卡片查看待办");
+      return;
+    }
+    if (localStorage.getItem(REMIND_KEY) === "1") {
+      localStorage.setItem(REMIND_KEY, "0");
+    } else {
+      Notification.requestPermission().then(function (p) {
+        if (p === "granted") { localStorage.setItem(REMIND_KEY, "1"); fireReminder(); }
+        else { alert("未允许通知权限，没法开启系统提醒"); }
+      });
+    }
+    updateRemindBtn(document.querySelector(".tc-remind"));
+  }
+
+  function fireReminder() {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    var body = todayDay
+      ? ("今日 " + todayDay.date + " 还有 " + todayRemain() + " 项待完成，加油！")
+      : "打开看看今天的备战任务吧～";
+    try { new Notification("备战总清单 · 每日提醒", { body: body }); } catch (e) {}
+  }
+
+  function updateTodayCard() {
+    var c = document.getElementById("todayCard");
+    if (!c) return;
+    var r = c.querySelector(".tc-remain");
+    if (r) r.textContent = todayRemain();
+  }
+
+  // 图例（补齐原版顶部的彩色标签说明）
+  function buildLegend(root) {
+    var row = document.createElement("div");
+    row.className = "legend-row";
+    [
+      ["ddl", "社·死线"], ["dig", "社·数字设计"], ["sim", "社·仿真"], ["pcb", "社·PCB"],
+      ["weld", "社·焊接"], ["race", "赛·集创赛（可牺牲）"], ["dec", "赛·决策"]
+    ].forEach(function (pair) {
+      var s = document.createElement("span");
+      s.className = "chip " + pair[0];
+      s.textContent = pair[1];
+      row.appendChild(s);
+    });
+    root.appendChild(row);
+  }
+
+  function buildPlan() {
+    var root = document.getElementById("viewPlan");
+    buildTodayCard(root);
+    buildLegend(root);
+    planWeeks.forEach(function (w) {
+      var det = document.createElement("details");
+      det.className = "week";
+      if (w.open) det.open = true;
+      var sum = document.createElement("summary");
+      sum.innerHTML = '<span class="wk-name"></span><span class="wk-count"></span><span class="chev">▶</span>';
+      sum.querySelector(".wk-name").textContent = w.name;
+      det.appendChild(sum);
+      var box = document.createElement("div");
+      box.className = "days";
+      w.days.forEach(function (d) {
+        var card = document.createElement("div");
+        card.className = "day";
+        card.id = "day-" + d.id;
+        var m = d.date.match(/(\d{1,2})\.(\d{1,2})/);
+        if (m && (m[1] + "." + m[2]) === TK) card.classList.add("today");
+        var top = document.createElement("div");
+        top.className = "day-top";
+        var dd = document.createElement("span");
+        dd.className = "day-date"; dd.textContent = d.date;
+        var tg = document.createElement("span");
+        tg.className = "day-tag " + d.tag; tg.textContent = TAG_NAME[d.tag];
+        top.appendChild(dd); top.appendChild(tg);
+        if (card.classList.contains("today")) {
+          var tb = document.createElement("span");
+          tb.className = "today-badge"; tb.textContent = "今天";
+          top.appendChild(tb);
+        }
+        var th = document.createElement("span");
+        th.className = "day-theme"; th.textContent = d.theme;
+        top.appendChild(th);
+        if (d.slot) {
+          var sl = document.createElement("span");
+          sl.className = "day-slot"; sl.textContent = d.slot;
+          top.appendChild(sl);
+        }
+        card.appendChild(top);
+        d.tasks.forEach(function (t) { card.appendChild(makeTaskRow(t)); });
+        box.appendChild(card);
+      });
+      det.appendChild(box);
+      root.appendChild(det);
+    });
+  }
+
+  function buildRes() {
+    var root = document.getElementById("viewRes");
+    resWeek.days.forEach(function (d) {
+      var g = document.createElement("div");
+      g.className = "res-group";
+      var head = document.createElement("div");
+      head.className = "res-head";
+      head.innerHTML = d.date + '<small>' + d.theme + '</small>';
+      g.appendChild(head);
+      d.tasks.forEach(function (t) {
+        var item = document.createElement("div");
+        item.className = "res-item";
+        var k = document.createElement("div");
+        k.className = "res-k"; k.textContent = t.k + " · " + t.slot;
+        var tx = document.createElement("div");
+        tx.className = "res-t"; tx.textContent = t.text;
+        item.appendChild(k); item.appendChild(tx);
+        if (t.links && t.links.length) {
+          var lk = document.createElement("div");
+          lk.className = "tk-links"; lk.style.marginLeft = "0";
+          t.links.forEach(function (pair) {
+            var a = document.createElement("a");
+            a.href = pair[1]; a.textContent = pair[0];
+            a.target = "_blank"; a.rel = "noopener";
+            lk.appendChild(a);
+          });
+          item.appendChild(lk);
+        }
+        g.appendChild(item);
+      });
+      root.appendChild(g);
+    });
+  }
+
+  function refresh() {
+    var done = 0;
+    document.querySelectorAll('.task input[type="checkbox"]').forEach(function (cb) { if (cb.checked) done++; });
+    document.getElementById("stat").innerHTML = "已勾 <b>" + done + "</b> / " + total + " 项 · 10.20 – 11.17";
+    document.getElementById("barFill").style.width = (total ? (done / total * 100) : 0) + "%";
+    document.querySelectorAll(".day").forEach(function (card) {
+      var cbs = card.querySelectorAll('.task input[type="checkbox"]');
+      var all = cbs.length > 0;
+      for (var i = 0; i < cbs.length; i++) { if (!cbs[i].checked) { all = false; break; } }
+      card.classList.toggle("done", all);
+    });
+    document.querySelectorAll(".week").forEach(function (det) {
+      var cbs = det.querySelectorAll('.task input[type="checkbox"]');
+      var d = 0;
+      for (var i = 0; i < cbs.length; i++) { if (cbs[i].checked) d++; }
+      var el = det.querySelector(".wk-count");
+      if (el) el.textContent = d + "/" + cbs.length;
+    });
+    updateTodayCard();
+  }
+
+  document.addEventListener("change", function (e) {
+    var cb = e.target;
+    if (cb && cb.dataset && cb.dataset.tid) {
+      state[cb.dataset.tid] = cb.checked;
+      try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (err) {}
+      refresh();
+    }
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    if (!confirm("确定清空所有勾选吗？")) return;
+    state = {};
+    try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    document.querySelectorAll('.task input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+    refresh();
+  });
+
+  // 底部标签切换
+  document.querySelectorAll(".tab").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tab = btn.dataset.tab;
+      document.querySelectorAll(".tab").forEach(function (b) { b.classList.toggle("on", b === btn); });
+      document.getElementById("viewPlan").classList.toggle("on", tab === "plan");
+      document.getElementById("viewRes").classList.toggle("on", tab === "res");
+      document.getElementById("viewRules").classList.toggle("on", tab === "rules");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
+  buildPlan();
+  buildRes();
+  refresh();
+
+  // 首次打开显示「安装到主屏幕」引导（点 × 后永久关闭）
+  (function () {
+    var KEY = "bz_pwa_tip_closed";
+    if (localStorage.getItem(KEY)) return;
+    var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    var txt = isIOS
+      ? '想当 App 用：点 Safari 底部 <b>分享按钮 ↑ → 「添加到主屏幕」</b>，桌面就有入口，点开全屏无地址栏。'
+      : '想当 App 用：点浏览器 <b>菜单 ⋮ → 「添加到主屏幕 / 添加到桌面」</b>，桌面就有图标，点开即用。';
+    var tip = document.getElementById("pwaTip");
+    document.getElementById("ptTxt").innerHTML = txt;
+    tip.style.display = "";
+    document.getElementById("ptX").addEventListener("click", function () {
+      tip.style.display = "none";
+      try { localStorage.setItem(KEY, "1"); } catch (e) {}
+    });
+  })();
+
+  // 若已开启每日提醒且拥有通知权限，打开 App 时弹一次提醒
+  if (localStorage.getItem(REMIND_KEY) === "1" && "Notification" in window && Notification.permission === "granted") {
+    setTimeout(fireReminder, 1500);
+  }
+
+  // PWA：注册 Service Worker（仅在 https/http 下生效，本地 file:// 自动跳过）
+  if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  }
+})();
+</script>
+</body>
+</html>
