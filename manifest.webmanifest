@@ -1,0 +1,31 @@
+{
+  "name": "备战总清单 · 电子社＋集创赛",
+  "short_name": "备战清单",
+  "description": "电子社考核 + 集创赛 10.20–11.17 备战总清单",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f3f5",
+  "theme_color": "#2f9e6e",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
